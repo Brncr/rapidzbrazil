@@ -8,70 +8,59 @@ import { cn } from "@/lib/utils";
 const InfluencerCard = ({ inf, index }: { inf: Influencer; index: number }) => {
   return (
     <div
-      className="rounded-xl bg-card border border-border p-4 md:p-6 fade-up flex flex-col md:flex-row gap-4 md:gap-6 hover:border-primary/50 transition-colors w-full"
+      className="rounded-xl bg-card border border-border p-4 md:p-5 fade-up flex flex-col gap-4 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all w-full h-full"
       style={{ animationDelay: `${0.1 + index * 0.05}s` }}
     >
-      {/* Left Section: Profile & Stats */}
-      <div className="flex flex-col gap-3 min-w-[200px] md:w-[250px] shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-rapidz p-[2px] overflow-hidden flex-shrink-0">
-            <div className="w-full h-full rounded-full overflow-hidden bg-background flex items-center justify-center">
-              {inf.image_url ? (
-                <img
-                  src={inf.image_url}
-                  alt={inf.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <Twitter className="w-6 h-6 text-primary" />
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col min-w-0">
-            <h4 className="font-bold font-display text-base leading-tight truncate">{inf.name}</h4>
-            <a
-              href={`https://x.com/${inf.handle.replace("@", "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 mt-0.5 truncate"
-            >
-              {inf.handle} <ExternalLink className="w-3 h-3" />
-            </a>
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-gradient-rapidz p-[2px] overflow-hidden flex-shrink-0">
+          <div className="w-full h-full rounded-full overflow-hidden bg-background flex items-center justify-center">
+            {inf.image_url ? (
+              <img
+                src={inf.image_url}
+                alt={inf.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Twitter className="w-5 h-5 text-primary" />
+            )}
           </div>
         </div>
-
-        <div className="flex flex-wrap gap-2">
-          {inf.followers && (
-            <div className="bg-muted/40 px-2.5 py-1 rounded-full text-xs font-medium border border-border/50">
-              <span className="text-foreground">{inf.followers}</span> <span className="text-muted-foreground/70">Followers</span>
-            </div>
-          )}
-          {inf.tier && (
-            <span className={`text-xs px-2.5 py-1 rounded-full font-medium border ${inf.tier === "Top" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" :
-              inf.tier === "Medium" ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
-                "bg-muted text-muted-foreground border-border"
-              }`}>
-              {inf.tier}
-            </span>
-          )}
+        <div className="flex flex-col min-w-0">
+          <h4 className="font-bold font-display text-sm leading-tight truncate">{inf.name}</h4>
+          <a
+            href={`https://x.com/${inf.handle.replace("@", "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 mt-0.5 truncate"
+          >
+            {inf.handle} <ExternalLink className="w-3 h-3" />
+          </a>
         </div>
-
-        {inf.category && (
-          <div className="text-xs text-muted-foreground font-medium bg-muted/20 px-2 py-1 rounded border border-border/30 w-fit">
-            {inf.category}
-          </div>
-        )}
       </div>
 
-      {/* Divider on desktop */}
-      <div className="hidden md:block w-px bg-border/50 self-stretch" />
+      {/* Stats Row */}
+      <div className="grid grid-cols-3 gap-2">
+        <div className="bg-muted/30 rounded py-1.5 px-1 text-center border border-border/50">
+          <span className="block font-bold text-sm text-foreground">{inf.followers || "-"}</span>
+          <span className="text-[9px] text-muted-foreground uppercase tracking-wider">Followers</span>
+        </div>
+        <div className="bg-muted/30 rounded py-1.5 px-1 text-center border border-border/50">
+          <span className="block font-bold text-sm text-foreground">{inf.tier || "-"}</span>
+          <span className="text-[9px] text-muted-foreground uppercase tracking-wider">Tier</span>
+        </div>
+        <div className="bg-muted/30 rounded py-1.5 px-1 text-center border border-border/50">
+          <span className="block font-bold text-xs text-foreground truncate px-1">{inf.category || "-"}</span>
+          <span className="text-[9px] text-muted-foreground uppercase tracking-wider">Category</span>
+        </div>
+      </div>
 
-      {/* Right Section: Strategy */}
-      <div className="flex-1 flex flex-col justify-center">
-        <h5 className="text-xs font-bold mb-2 flex items-center gap-1.5 text-primary uppercase tracking-wide">
-          <TrendingUp className="w-3.5 h-3.5" /> Strategy & Insight
+      {/* Strategy Box - Always Visible */}
+      <div className="flex-1 bg-primary/5 rounded-lg border border-primary/10 p-3">
+        <h5 className="text-[10px] font-bold mb-1.5 flex items-center gap-1.5 text-primary uppercase tracking-wide">
+          <TrendingUp className="w-3 h-3" /> Strategy
         </h5>
-        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+        <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">
           {inf.detailed_info || "No detailed strategy info available."}
         </p>
       </div>
@@ -96,7 +85,7 @@ const InfluencersSlide = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px]" />
 
-      <div className="relative z-10 max-w-5xl mx-auto w-full">
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
         {/* Header */}
         <div className="mb-6 fade-up">
           <div className="flex items-center justify-between mb-3">
@@ -113,8 +102,8 @@ const InfluencersSlide = () => {
           </p>
         </div>
 
-        {/* Influencers List - Full Width Cards */}
-        <div className="flex flex-col gap-3 mb-8">
+        {/* Influencers Grid - 3 Columns for Wider Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {influencers.map((inf, i) => (
             <InfluencerCard key={inf.id} inf={inf} index={i} />
           ))}
