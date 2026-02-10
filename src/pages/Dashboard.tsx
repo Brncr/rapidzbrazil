@@ -36,9 +36,6 @@ const Dashboard = () => {
   const [changedCommunities, setChangedCommunities] = useState<Set<string>>(new Set());
   const [changedStreamers, setChangedStreamers] = useState<Set<string>>(new Set());
 
-  // Track visibility preference
-  const [hiddenInfluencers, setHiddenInfluencers] = useState<Set<string>>(new Set());
-
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -51,12 +48,6 @@ const Dashboard = () => {
         setInfluencers(inf);
         setCommunities(comm);
         setStreamers(str);
-
-        // Load hidden influencers from localStorage
-        const savedHidden = localStorage.getItem('hiddenInfluencers');
-        if (savedHidden) {
-          setHiddenInfluencers(new Set(JSON.parse(savedHidden)));
-        }
       } catch (error) {
         console.error("Error loading data:", error);
         toast.error("Error loading data");
@@ -68,19 +59,16 @@ const Dashboard = () => {
   }, []);
 
   const toggleInfluencerVisibility = (id: string) => {
-    setHiddenInfluencers(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      localStorage.setItem('hiddenInfluencers', JSON.stringify(Array.from(next)));
-      return next;
-    });
+    const influencer = influencers.find(inf => inf.id === id);
+    if (!influencer) return;
+
+    // Toggle the visible property (default to true if undefined)
+    const newVisible = influencer.visible === undefined ? false : !influencer.visible;
+
+    handleInfluencerFieldChange(id, "visible", newVisible as any);
   };
 
-  const handleInfluencerFieldChange = (id: string, field: keyof Influencer, value: string) => {
+  const handleInfluencerFieldChange = (id: string, field: keyof Influencer, value: string | boolean) => {
     setInfluencers(prev => prev.map(item =>
       item.id === id ? { ...item, [field]: value } : item
     ));
@@ -165,6 +153,7 @@ const Dashboard = () => {
             followers: item.followers,
             tier: item.tier,
             image_url: item.image_url,
+            visible: item.visible,
           });
         }
       }
@@ -299,7 +288,7 @@ const Dashboard = () => {
                         <div className="flex items-center gap-2 px-2">
                           <Switch
                             id={`visible-${inf.id}`}
-                            checked={!hiddenInfluencers.has(inf.id)}
+                            checked={inf.visible !== false}
                             onCheckedChange={() => toggleInfluencerVisibility(inf.id)}
                             className="scale-75"
                           />
