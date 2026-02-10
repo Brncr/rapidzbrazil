@@ -10,6 +10,7 @@ export interface Influencer {
   engagement: string;
   tier?: string | null;
   image_url?: string | null;
+  visible?: boolean | null;
 }
 
 export interface Community {
@@ -41,7 +42,7 @@ export const getInfluencers = async (): Promise<Influencer[]> => {
     .from("influencers")
     .select("*")
     .order("created_at", { ascending: true });
-  
+
   if (error) {
     console.error("Error fetching influencers:", error);
     return [];
@@ -54,7 +55,7 @@ export const getCommunities = async (): Promise<Community[]> => {
     .from("communities")
     .select("*")
     .order("created_at", { ascending: true });
-  
+
   if (error) {
     console.error("Error fetching communities:", error);
     return [];
@@ -67,7 +68,7 @@ export const getStreamers = async (): Promise<Streamer[]> => {
     .from("streamers")
     .select("*")
     .order("created_at", { ascending: true });
-  
+
   if (error) {
     console.error("Error fetching streamers:", error);
     return [];
@@ -81,7 +82,7 @@ export const updateInfluencerImage = async (id: string, imageUrl: string): Promi
     .from("influencers")
     .update({ image_url: imageUrl })
     .eq("id", id);
-  
+
   if (error) {
     console.error("Error updating influencer image:", error);
     throw error;
@@ -93,7 +94,7 @@ export const updateCommunityImage = async (id: string, imageUrl: string): Promis
     .from("communities")
     .update({ image_url: imageUrl })
     .eq("id", id);
-  
+
   if (error) {
     console.error("Error updating community image:", error);
     throw error;
@@ -105,7 +106,7 @@ export const updateStreamerImage = async (id: string, imageUrl: string): Promise
     .from("streamers")
     .update({ image_url: imageUrl })
     .eq("id", id);
-  
+
   if (error) {
     console.error("Error updating streamer image:", error);
     throw error;
@@ -118,7 +119,7 @@ export const updateStreamer = async (id: string, data: Partial<Streamer>): Promi
     .from("streamers")
     .update(data)
     .eq("id", id);
-  
+
   if (error) {
     console.error("Error updating streamer:", error);
     throw error;
@@ -131,7 +132,7 @@ export const updateInfluencer = async (id: string, data: Partial<Influencer>): P
     .from("influencers")
     .update(data)
     .eq("id", id);
-  
+
   if (error) {
     console.error("Error updating influencer:", error);
     throw error;
@@ -144,7 +145,7 @@ export const updateCommunity = async (id: string, data: Partial<Community>): Pro
     .from("communities")
     .update(data)
     .eq("id", id);
-  
+
   if (error) {
     console.error("Error updating community:", error);
     throw error;
@@ -158,7 +159,7 @@ export const addStreamer = async (streamer: Omit<Streamer, "id">): Promise<Strea
     .insert(streamer)
     .select()
     .single();
-  
+
   if (error) {
     console.error("Error adding streamer:", error);
     throw error;
@@ -173,7 +174,7 @@ export const addInfluencer = async (influencer: Omit<Influencer, "id">): Promise
     .insert(influencer)
     .select()
     .single();
-  
+
   if (error) {
     console.error("Error adding influencer:", error);
     throw error;
@@ -188,7 +189,7 @@ export const addCommunity = async (community: Omit<Community, "id">): Promise<Co
     .insert(community)
     .select()
     .single();
-  
+
   if (error) {
     console.error("Error adding community:", error);
     throw error;

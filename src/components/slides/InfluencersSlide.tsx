@@ -10,14 +10,8 @@ const InfluencersSlide = () => {
   useEffect(() => {
     const loadData = async () => {
       const data = await getInfluencers();
-
-      const savedHidden = localStorage.getItem('hiddenInfluencers');
-      if (savedHidden) {
-        const hiddenSet = new Set(JSON.parse(savedHidden));
-        setInfluencers(data.filter(inf => !hiddenSet.has(inf.id)));
-      } else {
-        setInfluencers(data);
-      }
+      // Filter out hidden influencers (visible defaults to true if undefined)
+      setInfluencers(data.filter(inf => inf.visible !== false));
     };
     loadData();
   }, []);
