@@ -8,7 +8,7 @@ const CommunitiesSlide = () => {
   useEffect(() => {
     const loadData = async () => {
       const data = await getCommunities();
-      setCommunities(data);
+      setCommunities(data.filter(c => c.visible !== false));
     };
     loadData();
   }, []);

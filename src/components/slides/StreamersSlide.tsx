@@ -8,7 +8,7 @@ const StreamersSlide = () => {
   useEffect(() => {
     const loadData = async () => {
       const data = await getStreamers();
-      setStreamers(data);
+      setStreamers(data.filter(s => s.visible !== false));
     };
     loadData();
   }, []);

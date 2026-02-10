@@ -75,14 +75,32 @@ const Dashboard = () => {
     setChangedInfluencers(prev => new Set(prev).add(id));
   };
 
-  const handleCommunityFieldChange = (id: string, field: keyof Community, value: string) => {
+  const toggleCommunityVisibility = (id: string) => {
+    const community = communities.find(c => c.id === id);
+    if (!community) return;
+
+    // Toggle visible property, default to true if undefined
+    const newVisible = community.visible === undefined ? false : !community.visible;
+    handleCommunityFieldChange(id, "visible", newVisible as any);
+  };
+
+  const handleCommunityFieldChange = (id: string, field: keyof Community, value: string | boolean) => {
     setCommunities(prev => prev.map(item =>
       item.id === id ? { ...item, [field]: value } : item
     ));
     setChangedCommunities(prev => new Set(prev).add(id));
   };
 
-  const handleStreamerFieldChange = (id: string, field: keyof Streamer, value: string) => {
+  const toggleStreamerVisibility = (id: string) => {
+    const streamer = streamers.find(s => s.id === id);
+    if (!streamer) return;
+
+    // Toggle visible property, default to true if undefined
+    const newVisible = streamer.visible === undefined ? false : !streamer.visible;
+    handleStreamerFieldChange(id, "visible", newVisible as any);
+  };
+
+  const handleStreamerFieldChange = (id: string, field: keyof Streamer, value: string | boolean) => {
     setStreamers(prev => prev.map(item =>
       item.id === id ? { ...item, [field]: value } : item
     ));
@@ -168,6 +186,7 @@ const Dashboard = () => {
             discord_url: item.discord_url,
             website_url: item.website_url,
             image_url: item.image_url,
+            visible: item.visible,
           });
         }
       }
@@ -184,6 +203,7 @@ const Dashboard = () => {
             image_url: item.image_url,
             twitch_url: item.twitch_url,
             twitter_handle: item.twitter_handle,
+            visible: item.visible,
           });
         }
       }
@@ -389,9 +409,20 @@ const Dashboard = () => {
                         <Input
                           value={comm.name}
                           onChange={(e) => handleCommunityFieldChange(comm.id, "name", e.target.value)}
-                          className="text-base font-semibold h-7 px-2"
+                          className="text-base font-semibold h-7 px-2 mb-2"
                           placeholder="Community Name"
                         />
+                        <div className="flex items-center gap-2 px-2">
+                          <Switch
+                            id={`visible-comm-${comm.id}`}
+                            checked={comm.visible !== false}
+                            onCheckedChange={() => toggleCommunityVisibility(comm.id)}
+                            className="scale-75"
+                          />
+                          <Label htmlFor={`visible-comm-${comm.id}`} className="text-xs text-muted-foreground cursor-pointer">
+                            Visible on Slide
+                          </Label>
+                        </div>
                       </div>
                     </div>
                   </CardHeader>
@@ -469,8 +500,19 @@ const Dashboard = () => {
                         <Input
                           value={str.name}
                           onChange={(e) => handleStreamerFieldChange(str.id, "name", e.target.value)}
-                          className="text-base font-semibold h-7 px-2"
+                          className="text-base font-semibold h-7 px-2 mb-2"
                         />
+                        <div className="flex items-center gap-2 px-2">
+                          <Switch
+                            id={`visible-str-${str.id}`}
+                            checked={str.visible !== false}
+                            onCheckedChange={() => toggleStreamerVisibility(str.id)}
+                            className="scale-75"
+                          />
+                          <Label htmlFor={`visible-str-${str.id}`} className="text-xs text-muted-foreground cursor-pointer">
+                            Visible on Slide
+                          </Label>
+                        </div>
                       </div>
                     </div>
                   </CardHeader>

@@ -21,6 +21,7 @@ export interface Community {
   website_url?: string | null;
   members?: string | null;
   image_url?: string | null;
+  visible?: boolean | null;
 }
 
 export interface Streamer {
@@ -34,6 +35,7 @@ export interface Streamer {
   twitch_url?: string | null;
   youtube_url?: string | null;
   twitter_handle?: string | null;
+  visible?: boolean | null;
 }
 
 // Fetch data from database
