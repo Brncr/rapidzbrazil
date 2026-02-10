@@ -10,7 +10,14 @@ const InfluencersSlide = () => {
   useEffect(() => {
     const loadData = async () => {
       const data = await getInfluencers();
-      setInfluencers(data);
+
+      const savedHidden = localStorage.getItem('hiddenInfluencers');
+      if (savedHidden) {
+        const hiddenSet = new Set(JSON.parse(savedHidden));
+        setInfluencers(data.filter(inf => !hiddenSet.has(inf.id)));
+      } else {
+        setInfluencers(data);
+      }
     };
     loadData();
   }, []);
@@ -20,7 +27,7 @@ const InfluencersSlide = () => {
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px]" />
-      
+
       <div className="relative z-10 max-w-6xl mx-auto w-full">
         {/* Header */}
         <div className="mb-4 md:mb-8 fade-up">
@@ -43,7 +50,7 @@ const InfluencersSlide = () => {
             First attack: conquer the main opinion leaders of Crypto Twitter Brazil
           </p>
         </div>
-        
+
         {/* Influencers Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4 mb-4 md:mb-8">
           {influencers.map((inf, i) => (
@@ -55,8 +62,8 @@ const InfluencersSlide = () => {
               <div className="flex items-start justify-between mb-2 md:mb-3">
                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-rapidz flex items-center justify-center overflow-hidden">
                   {inf.image_url ? (
-                    <img 
-                      src={inf.image_url} 
+                    <img
+                      src={inf.image_url}
                       alt={inf.name}
                       className="w-full h-full object-cover"
                     />
@@ -80,11 +87,10 @@ const InfluencersSlide = () => {
                   <span className="text-[10px] md:text-xs text-muted-foreground">{inf.followers}</span>
                 )}
                 {inf.tier && (
-                  <span className={`text-[10px] md:text-xs px-1 md:px-1.5 py-0.5 rounded-full font-medium ${
-                    inf.tier === "Top" ? "bg-amber-500/20 text-amber-400" :
+                  <span className={`text-[10px] md:text-xs px-1 md:px-1.5 py-0.5 rounded-full font-medium ${inf.tier === "Top" ? "bg-amber-500/20 text-amber-400" :
                     inf.tier === "Medium" ? "bg-blue-500/20 text-blue-400" :
-                    "bg-muted text-muted-foreground"
-                  }`}>
+                      "bg-muted text-muted-foreground"
+                    }`}>
                     {inf.tier}
                   </span>
                 )}
@@ -92,7 +98,7 @@ const InfluencersSlide = () => {
             </div>
           ))}
         </div>
-        
+
         {/* Strategy Actions */}
         <div className="grid grid-cols-3 gap-2 md:gap-4">
           <div className="p-3 md:p-5 rounded-xl bg-card/50 border border-border fade-up" style={{ animationDelay: "0.6s" }}>

@@ -21,6 +21,9 @@ import {
   addCommunity,
 } from "@/lib/entityData";
 
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+
 const Dashboard = () => {
   const [influencers, setInfluencers] = useState<Influencer[]>([]);
   const [communities, setCommunities] = useState<Community[]>([]);
@@ -32,6 +35,9 @@ const Dashboard = () => {
   const [changedInfluencers, setChangedInfluencers] = useState<Set<string>>(new Set());
   const [changedCommunities, setChangedCommunities] = useState<Set<string>>(new Set());
   const [changedStreamers, setChangedStreamers] = useState<Set<string>>(new Set());
+
+  // Track visibility preference
+  const [hiddenInfluencers, setHiddenInfluencers] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const loadData = async () => {
@@ -45,6 +51,12 @@ const Dashboard = () => {
         setInfluencers(inf);
         setCommunities(comm);
         setStreamers(str);
+
+        // Load hidden influencers from localStorage
+        const savedHidden = localStorage.getItem('hiddenInfluencers');
+        if (savedHidden) {
+          setHiddenInfluencers(new Set(JSON.parse(savedHidden)));
+        }
       } catch (error) {
         console.error("Error loading data:", error);
         toast.error("Error loading data");
@@ -55,22 +67,35 @@ const Dashboard = () => {
     loadData();
   }, []);
 
+  const toggleInfluencerVisibility = (id: string) => {
+    setHiddenInfluencers(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      localStorage.setItem('hiddenInfluencers', JSON.stringify(Array.from(next)));
+      return next;
+    });
+  };
+
   const handleInfluencerFieldChange = (id: string, field: keyof Influencer, value: string) => {
-    setInfluencers(prev => prev.map(item => 
+    setInfluencers(prev => prev.map(item =>
       item.id === id ? { ...item, [field]: value } : item
     ));
     setChangedInfluencers(prev => new Set(prev).add(id));
   };
 
   const handleCommunityFieldChange = (id: string, field: keyof Community, value: string) => {
-    setCommunities(prev => prev.map(item => 
+    setCommunities(prev => prev.map(item =>
       item.id === id ? { ...item, [field]: value } : item
     ));
     setChangedCommunities(prev => new Set(prev).add(id));
   };
 
   const handleStreamerFieldChange = (id: string, field: keyof Streamer, value: string) => {
-    setStreamers(prev => prev.map(item => 
+    setStreamers(prev => prev.map(item =>
       item.id === id ? { ...item, [field]: value } : item
     ));
     setChangedStreamers(prev => new Set(prev).add(id));
@@ -252,8 +277,8 @@ const Dashboard = () => {
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
                         {inf.image_url ? (
-                          <img 
-                            src={inf.image_url} 
+                          <img
+                            src={inf.image_url}
                             alt={inf.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -268,9 +293,20 @@ const Dashboard = () => {
                         <Input
                           value={inf.name}
                           onChange={(e) => handleInfluencerFieldChange(inf.id, "name", e.target.value)}
-                          className="text-base font-semibold h-7 px-2"
+                          className="text-base font-semibold h-7 px-2 mb-2"
                           placeholder="Name"
                         />
+                        <div className="flex items-center gap-2 px-2">
+                          <Switch
+                            id={`visible-${inf.id}`}
+                            checked={!hiddenInfluencers.has(inf.id)}
+                            onCheckedChange={() => toggleInfluencerVisibility(inf.id)}
+                            className="scale-75"
+                          />
+                          <Label htmlFor={`visible-${inf.id}`} className="text-xs text-muted-foreground cursor-pointer">
+                            Visible on Slide
+                          </Label>
+                        </div>
                       </div>
                     </div>
                   </CardHeader>
@@ -348,8 +384,8 @@ const Dashboard = () => {
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
                         {comm.image_url ? (
-                          <img 
-                            src={comm.image_url} 
+                          <img
+                            src={comm.image_url}
                             alt={comm.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -428,8 +464,8 @@ const Dashboard = () => {
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
                         {str.image_url ? (
-                          <img 
-                            src={str.image_url} 
+                          <img
+                            src={str.image_url}
                             alt={str.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -514,7 +550,7 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </div >
   );
 };
 
