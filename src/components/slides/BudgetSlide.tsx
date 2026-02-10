@@ -56,7 +56,7 @@ const BudgetSlide = () => {
           {milestones.map((milestone, i) => (
             <div
               key={milestone.id}
-              className="p-3 md:p-5 rounded-xl md:rounded-2xl bg-card/50 border border-border/50 fade-up hover:border-emerald-500/30 transition-all"
+              className="p-3 md:p-5 rounded-xl md:rounded-2xl bg-card/50 border border-border/50 fade-up hover:border-emerald-500/30 transition-all flex flex-col"
               style={{ animationDelay: `${0.1 + i * 0.1}s` }}
             >
               <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
@@ -71,7 +71,7 @@ const BudgetSlide = () => {
 
               <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4 font-light">{milestone.description}</p>
 
-              <div className="space-y-2 md:space-y-3">
+              <div className="space-y-2 md:space-y-3 flex-1">
                 {milestone.items.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-start text-xs md:text-sm">
                     <div className="min-w-0 mr-2">
