@@ -1,4 +1,4 @@
-import { ExternalLink, Tv, MessageSquare } from "lucide-react";
+import { ExternalLink, Tv, MessageSquare, Users } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Streamer, getStreamers } from "@/lib/entityData";
 
@@ -76,7 +76,10 @@ const StreamersSlide = () => {
                   </div>
                 )}
                 {streamer.followers && (
-                  <p className="text-xs text-muted-foreground mt-1">{streamer.followers} followers</p>
+                  <div className="flex items-center gap-1.5 mt-2 bg-muted/40 px-2.5 py-1 rounded-full border border-border/50">
+                    <Users className="w-3 h-3 text-muted-foreground" />
+                    <p className="text-xs font-medium text-foreground">{streamer.followers} <span className="text-muted-foreground font-normal">followers</span></p>
+                  </div>
                 )}
               </div>
             </div>

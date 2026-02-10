@@ -553,6 +553,15 @@ const Dashboard = () => {
                           className="text-sm h-8"
                         />
                       </div>
+                      <div className="col-span-2">
+                        <label className="text-xs text-muted-foreground">Followers</label>
+                        <Input
+                          value={str.followers || ""}
+                          onChange={(e) => handleStreamerFieldChange(str.id, "followers", e.target.value)}
+                          placeholder="e.g. 50K"
+                          className="text-sm h-8"
+                        />
+                      </div>
                     </div>
                     <div>
                       <label className="text-xs text-muted-foreground">Platform</label>
