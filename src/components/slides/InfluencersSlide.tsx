@@ -29,12 +29,7 @@ const InfluencersSlide = () => {
             <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-primary/10 border border-primary/30">
               <span className="text-primary font-semibold text-sm">Phase 1</span>
             </div>
-            <Link to="/dashboard">
-              <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground text-xs md:text-sm">
-                <Settings className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                <span className="hidden md:inline">Edit Photos</span>
-              </Button>
-            </Link>
+
           </div>
           <h2 className="text-2xl md:text-5xl font-bold font-display mb-2 md:mb-4">
             <span className="text-gradient-rapidz">Twitter</span>
