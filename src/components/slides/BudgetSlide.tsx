@@ -10,7 +10,7 @@ const milestones = [
       { name: "2 Community Staff", cost: "", detail: "$600" },
       { name: "", cost: "", detail: "" },
     ],
-    total: "",
+    total: "Total: $1,200",
     icon: Users,
   },
   {
@@ -23,7 +23,7 @@ const milestones = [
       { name: "2 Small Influencers", cost: "", detail: "$600" },
       { name: "", cost: "", detail: "" },
     ],
-    total: "",
+    total: "Total: $3,800",
     icon: Megaphone,
   },
 ];
@@ -89,6 +89,24 @@ const BudgetSlide = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Total Budget Display */}
+        <div className="mt-6 md:mt-8 p-4 md:p-6 rounded-2xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 backdrop-blur-sm">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 md:p-3 rounded-full bg-emerald-500/20">
+                <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-emerald-400" />
+              </div>
+              <div>
+                <p className="text-sm md:text-base text-muted-foreground font-medium">Total Campaign Investment</p>
+                <p className="text-xs md:text-sm text-emerald-400/80">All inclusive (Team + Influencers)</p>
+              </div>
+            </div>
+            <div className="text-3xl md:text-4xl font-bold font-display text-white">
+              $5,000
+            </div>
+          </div>
         </div>
       </div>
     </div>
