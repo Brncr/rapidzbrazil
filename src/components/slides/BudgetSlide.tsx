@@ -7,7 +7,7 @@ const milestones = [
     description: "Full strategy execution: influencers, streamers, communities, content & KPIs",
     items: [
       { name: "Bruno (Community Builder)", cost: "", detail: "$600" },
-      { name: "Community Staff", cost: "", detail: " $300/community" },
+      { name: "2 Community Staff", cost: "", detail: "$600" },
       { name: "", cost: "", detail: "" },
     ],
     total: "",
