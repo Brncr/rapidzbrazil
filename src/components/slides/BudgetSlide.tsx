@@ -18,9 +18,9 @@ const milestones = [
     title: "Influencer Partnerships",
     description: "Monthly tiers and performance-based content payments",
     items: [
-      { name: "Small Influencers", cost: "", detail: " $300/month" },
-      { name: "Medium Influencers", cost: "", detail: " $600/month" },
-      { name: "Top Influencers", cost: "", detail: " $1,000/month" },
+      { name: "2 Top Influencers", cost: "", detail: "$2000" },
+      { name: "2 Medium Influencers", cost: "", detail: "$1200" },
+      { name: "2 Small Influencers", cost: "", detail: "$600" },
       { name: "", cost: "", detail: "" },
     ],
     total: "",
