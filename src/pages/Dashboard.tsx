@@ -201,6 +201,7 @@ const Dashboard = () => {
             handle: item.handle,
             category: item.category,
             platform: item.platform,
+            followers: item.followers,
             image_url: item.image_url,
             twitch_url: item.twitch_url,
             twitter_handle: item.twitter_handle,
