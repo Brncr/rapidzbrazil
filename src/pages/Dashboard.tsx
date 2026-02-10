@@ -455,6 +455,15 @@ const Dashboard = () => {
                       />
                     </div>
                     <div>
+                      <label className="text-xs text-muted-foreground">Members</label>
+                      <Input
+                        value={comm.members || ""}
+                        onChange={(e) => handleCommunityFieldChange(comm.id, "members", e.target.value)}
+                        className="text-sm h-8"
+                        placeholder="e.g. 15,000"
+                      />
+                    </div>
+                    <div>
                       <label className="text-xs text-muted-foreground">Image URL</label>
                       <Input
                         placeholder="https://example.com/logo.jpg"
