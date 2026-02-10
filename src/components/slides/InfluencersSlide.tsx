@@ -108,7 +108,7 @@ const InfluencersSlide = () => {
             <Users className="w-5 h-5 md:w-8 md:h-8 text-primary mb-2 md:mb-3" />
             <h4 className="font-bold font-display text-xs md:text-base mb-1 md:mb-2">Goal</h4>
             <p className="text-[10px] md:text-sm text-muted-foreground hidden md:block">
-              Close with 5 influencers in the first month = ~400 signups
+              Close with 6 influencers in the first month
             </p>
           </div>
         </div>
