@@ -186,6 +186,7 @@ const Dashboard = () => {
             twitter_handle: item.twitter_handle,
             discord_url: item.discord_url,
             website_url: item.website_url,
+            members: item.members,
             image_url: item.image_url,
             visible: item.visible,
           });
