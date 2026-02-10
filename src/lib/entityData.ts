@@ -11,6 +11,7 @@ export interface Influencer {
   tier?: string | null;
   image_url?: string | null;
   visible?: boolean | null;
+  detailed_info?: string | null;
 }
 
 export interface Community {

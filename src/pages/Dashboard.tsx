@@ -172,6 +172,7 @@ const Dashboard = () => {
             tier: item.tier,
             image_url: item.image_url,
             visible: item.visible,
+            detailed_info: item.detailed_info,
           });
         }
       }
@@ -370,6 +371,15 @@ const Dashboard = () => {
                         value={inf.image_url || ""}
                         onChange={(e) => handleInfluencerFieldChange(inf.id, "image_url", e.target.value)}
                         className="text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground">Detailed Info</label>
+                      <textarea
+                        value={inf.detailed_info || ""}
+                        onChange={(e) => handleInfluencerFieldChange(inf.id, "detailed_info", e.target.value)}
+                        className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Additional details here..."
                       />
                     </div>
                   </CardContent>
