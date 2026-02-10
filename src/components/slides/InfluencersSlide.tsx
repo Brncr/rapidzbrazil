@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Twitter, MessageCircle, TrendingUp, Users, ChevronDown, ChevronUp } from "lucide-react";
+import { ExternalLink, Twitter, MessageCircle, TrendingUp, Users, ChevronDown, ChevronUp, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Influencer, getInfluencers } from "@/lib/entityData";
@@ -11,83 +11,114 @@ const InfluencerCard = ({ inf, index }: { inf: Influencer; index: number }) => {
   return (
     <div
       className={cn(
-        "p-3 md:p-4 rounded-xl bg-card border border-border hover:border-primary/50 transition-all fade-up flex flex-col h-fit",
-        isOpen ? "ring-1 ring-primary/50" : ""
+        "relative rounded-xl border transition-all duration-300 ease-in-out fade-up flex flex-col",
+        isOpen
+          ? "bg-card z-10 scale-105 shadow-2xl border-primary ring-2 ring-primary/20"
+          : "bg-card border-border hover:border-primary/50 cursor-pointer p-3 md:p-4"
       )}
       style={{ animationDelay: `${0.1 + index * 0.05}s` }}
+      onClick={() => !isOpen && setIsOpen(true)}
     >
-      <div className="flex items-start justify-between mb-2 md:mb-3">
-        <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-rapidz flex items-center justify-center overflow-hidden flex-shrink-0">
-          {inf.image_url ? (
-            <img
-              src={inf.image_url}
-              alt={inf.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <Twitter className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
-          )}
-        </div>
-        <a
-          href={`https://x.com/${inf.handle.replace("@", "")}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="opacity-70 hover:opacity-100 transition-opacity"
-        >
-          <ExternalLink className="w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground hover:text-primary" />
-        </a>
-      </div>
-
-      <div className="mb-2">
-        <h4 className="font-bold font-display text-xs md:text-sm truncate">{inf.name}</h4>
-        <p className="text-primary text-[10px] md:text-xs truncate">{inf.handle}</p>
-      </div>
-
-      <div className="flex items-center gap-1 md:gap-2 mb-3 flex-wrap">
-        {inf.followers && (
-          <span className="text-[10px] md:text-xs text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded">{inf.followers}</span>
-        )}
-        {inf.tier && (
-          <span className={`text-[10px] md:text-xs px-1.5 py-0.5 rounded-full font-medium ${inf.tier === "Top" ? "bg-amber-500/20 text-amber-400" :
-            inf.tier === "Medium" ? "bg-blue-500/20 text-blue-400" :
-              "bg-muted text-muted-foreground"
-            }`}>
-            {inf.tier}
-          </span>
-        )}
-      </div>
-
-      {/* Collapsible Content */}
-      <div className={cn(
-        "space-y-3 overflow-hidden transition-all duration-300 ease-in-out",
-        isOpen ? "max-h-[500px] opacity-100 mt-2" : "max-h-0 opacity-0"
-      )}>
-        <div className="pt-3 border-t border-border/50">
-          <div className="mb-2">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
-              <TrendingUp className="w-3 h-3" /> Strategy
-            </span>
+      {/* Closed State Only */}
+      {!isOpen && (
+        <>
+          <div className="flex items-start justify-between mb-2 md:mb-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-rapidz flex items-center justify-center overflow-hidden flex-shrink-0">
+              {inf.image_url ? (
+                <img
+                  src={inf.image_url}
+                  alt={inf.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Twitter className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
+              )}
+            </div>
+            <div className="opacity-70 group-hover:opacity-100 transition-opacity">
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            {inf.detailed_info || "No detailed info available."}
-          </p>
-        </div>
-      </div>
+          <div className="mb-2">
+            <h4 className="font-bold font-display text-xs md:text-sm truncate">{inf.name}</h4>
+            <p className="text-primary text-[10px] md:text-xs truncate">{inf.handle}</p>
+          </div>
+          <div className="flex items-center gap-1 md:gap-2 flex-wrap">
+            {inf.followers && (
+              <span className="text-[10px] md:text-xs text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded">{inf.followers}</span>
+            )}
+            {inf.tier && (
+              <span className={`text-[10px] md:text-xs px-1.5 py-0.5 rounded-full font-medium ${inf.tier === "Top" ? "bg-amber-500/20 text-amber-400" :
+                inf.tier === "Medium" ? "bg-blue-500/20 text-blue-400" :
+                  "bg-muted text-muted-foreground"
+                }`}>
+                {inf.tier}
+              </span>
+            )}
+          </div>
+        </>
+      )}
 
-      <div className="mt-auto pt-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full h-7 text-xs gap-1 hover:bg-primary/10 hover:text-primary"
-        >
-          {isOpen ? (
-            <>Close <ChevronUp className="w-3 h-3" /></>
-          ) : (
-            <>View Strategy <ChevronDown className="w-3 h-3" /></>
-          )}
-        </Button>
-      </div>
+      {/* Expanded State (Matches the design) */}
+      {isOpen && (
+        <div className="p-4 md:p-5 flex flex-col gap-4">
+          {/* Header */}
+          <div className="flex items-center gap-4 relative">
+            <div className="w-14 h-14 rounded-full bg-gradient-rapidz p-[2px] overflow-hidden flex-shrink-0">
+              <div className="w-full h-full rounded-full overflow-hidden bg-background flex items-center justify-center">
+                {inf.image_url ? (
+                  <img src={inf.image_url} alt={inf.name} className="w-full h-full object-cover" />
+                ) : (
+                  <Twitter className="w-6 h-6 text-primary" />
+                )}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold font-display leading-none mb-1">{inf.name}</h3>
+              <a
+                href={`https://x.com/${inf.handle.replace("@", "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-red-500 font-medium flex items-center gap-1 hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {inf.handle} <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+            <button
+              onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
+              className="absolute -top-1 -right-1 text-muted-foreground hover:text-foreground p-1"
+            >
+              <ChevronUp className="w-5 h-5 rotate-180" />
+            </button>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-muted/30 rounded-lg p-2 text-center border border-border/50">
+              <span className="block font-bold text-sm md:text-base text-foreground">{inf.followers || "-"}</span>
+              <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide">Followers</span>
+            </div>
+            <div className="bg-muted/30 rounded-lg p-2 text-center border border-border/50">
+              <span className="block font-bold text-sm md:text-base text-foreground">{inf.tier || "-"}</span>
+              <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide">Tier</span>
+            </div>
+            <div className="bg-muted/30 rounded-lg p-2 text-center border border-border/50">
+              <span className="block font-bold text-sm md:text-base text-foreground break-words">{inf.category || "-"}</span>
+              <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide">Category</span>
+            </div>
+          </div>
+
+          {/* Strategy Box */}
+          <div className="bg-card/50 rounded-xl border border-border p-3 md:p-4">
+            <h5 className="text-sm font-semibold mb-2 flex items-center gap-2 text-red-500">
+              <TrendingUp className="w-4 h-4" /> Strategy & Insight
+            </h5>
+            <p className="text-xs md:text-sm text-muted-foreground leading-relaxed text-left">
+              {inf.detailed_info || "No detailed strategy info available."}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
