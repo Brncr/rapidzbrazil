@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Twitter, MessageCircle, TrendingUp, Users, ChevronDown, ChevronUp, X } from "lucide-react";
+import { ExternalLink, Twitter, MessageCircle, TrendingUp, Users, ChevronDown, ChevronUp, X, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Influencer, getInfluencers } from "@/lib/entityData";
@@ -11,10 +11,10 @@ const InfluencerCard = ({ inf, index }: { inf: Influencer; index: number }) => {
   return (
     <div
       className={cn(
-        "relative rounded-xl border transition-all duration-300 ease-in-out fade-up flex flex-col",
+        "relative rounded-xl border transition-all duration-300 ease-in-out fade-up flex flex-col w-full",
         isOpen
-          ? "bg-card z-10 scale-105 shadow-2xl border-primary ring-2 ring-primary/20"
-          : "bg-card border-border hover:border-primary/50 cursor-pointer p-3 md:p-4"
+          ? "bg-card z-10 shadow-2xl border-primary ring-1 ring-primary/20"
+          : "bg-card border-border hover:border-primary/50 cursor-pointer p-3 md:p-4 hover:shadow-lg hover:shadow-primary/5"
       )}
       style={{ animationDelay: `${0.1 + index * 0.05}s` }}
       onClick={() => !isOpen && setIsOpen(true)}
@@ -22,8 +22,8 @@ const InfluencerCard = ({ inf, index }: { inf: Influencer; index: number }) => {
       {/* Closed State Only */}
       {!isOpen && (
         <>
-          <div className="flex items-start justify-between mb-2 md:mb-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-rapidz flex items-center justify-center overflow-hidden flex-shrink-0">
+          <div className="flex items-start justify-between mb-2">
+            <div className="w-10 h-10 rounded-full bg-gradient-rapidz flex items-center justify-center overflow-hidden flex-shrink-0 ring-2 ring-background">
               {inf.image_url ? (
                 <img
                   src={inf.image_url}
@@ -31,89 +31,100 @@ const InfluencerCard = ({ inf, index }: { inf: Influencer; index: number }) => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <Twitter className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
+                <Twitter className="w-5 h-5 text-primary-foreground" />
               )}
             </div>
-            <div className="opacity-70 group-hover:opacity-100 transition-opacity">
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
               <ChevronDown className="w-4 h-4 text-muted-foreground" />
             </div>
           </div>
-          <div className="mb-2">
-            <h4 className="font-bold font-display text-xs md:text-sm truncate">{inf.name}</h4>
-            <p className="text-primary text-[10px] md:text-xs truncate">{inf.handle}</p>
+
+          <div className="mb-3">
+            <h4 className="font-bold font-display text-sm truncate">{inf.name}</h4>
+            <div className="flex items-center justify-between">
+              <p className="text-primary text-xs truncate opacity-80">{inf.handle}</p>
+              {inf.tier && (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium border ${inf.tier === "Top" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" :
+                  inf.tier === "Medium" ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
+                    "bg-muted text-muted-foreground border-border"
+                  }`}>
+                  {inf.tier}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-1 md:gap-2 flex-wrap">
-            {inf.followers && (
-              <span className="text-[10px] md:text-xs text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded">{inf.followers}</span>
-            )}
-            {inf.tier && (
-              <span className={`text-[10px] md:text-xs px-1.5 py-0.5 rounded-full font-medium ${inf.tier === "Top" ? "bg-amber-500/20 text-amber-400" :
-                inf.tier === "Medium" ? "bg-blue-500/20 text-blue-400" :
-                  "bg-muted text-muted-foreground"
-                }`}>
-                {inf.tier}
-              </span>
-            )}
+
+          <div className="flex items-center gap-2 mt-auto">
+            <div className="bg-muted/30 px-2 py-1 rounded text-xs text-muted-foreground font-medium flex items-center gap-1.5">
+              <Users className="w-3 h-3" />
+              {inf.followers || "-"}
+            </div>
+            <ChevronDown className="w-4 h-4 text-muted-foreground/50 ml-auto" />
           </div>
         </>
       )}
 
-      {/* Expanded State (Matches the design) */}
+      {/* Expanded State */}
       {isOpen && (
-        <div className="p-4 md:p-5 flex flex-col gap-4">
+        <div className="p-4 flex flex-col gap-4">
           {/* Header */}
-          <div className="flex items-center gap-4 relative">
-            <div className="w-14 h-14 rounded-full bg-gradient-rapidz p-[2px] overflow-hidden flex-shrink-0">
-              <div className="w-full h-full rounded-full overflow-hidden bg-background flex items-center justify-center">
-                {inf.image_url ? (
-                  <img src={inf.image_url} alt={inf.name} className="w-full h-full object-cover" />
-                ) : (
-                  <Twitter className="w-6 h-6 text-primary" />
-                )}
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-rapidz p-[2px] overflow-hidden flex-shrink-0">
+                <div className="w-full h-full rounded-full overflow-hidden bg-background flex items-center justify-center">
+                  {inf.image_url ? (
+                    <img src={inf.image_url} alt={inf.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <Twitter className="w-6 h-6 text-primary" />
+                  )}
+                </div>
+              </div>
+              <div>
+                <h3 className="text-base font-bold font-display leading-tight">{inf.name}</h3>
+                <a
+                  href={`https://x.com/${inf.handle.replace("@", "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-primary font-medium flex items-center gap-1 hover:underline mt-0.5"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {inf.handle} <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
             </div>
-            <div>
-              <h3 className="text-lg font-bold font-display leading-none mb-1">{inf.name}</h3>
-              <a
-                href={`https://x.com/${inf.handle.replace("@", "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-red-500 font-medium flex items-center gap-1 hover:underline"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {inf.handle} <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
-              className="absolute -top-1 -right-1 text-muted-foreground hover:text-foreground p-1"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0 -mt-2 -mr-2"
             >
-              <ChevronUp className="w-5 h-5 rotate-180" />
-            </button>
+              <X className="w-4 h-4" />
+            </Button>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-2">
-            <div className="bg-muted/30 rounded-lg p-2 text-center border border-border/50">
-              <span className="block font-bold text-sm md:text-base text-foreground">{inf.followers || "-"}</span>
-              <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide">Followers</span>
+          {/* Stats Rows */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="bg-muted/30 rounded-lg p-2 border border-border/50 flex flex-col items-center justify-center text-center">
+              <span className="text-lg font-bold text-foreground leading-none">{inf.followers || "-"}</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">Followers</span>
             </div>
-            <div className="bg-muted/30 rounded-lg p-2 text-center border border-border/50">
-              <span className="block font-bold text-sm md:text-base text-foreground">{inf.tier || "-"}</span>
-              <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide">Tier</span>
+            <div className="bg-muted/30 rounded-lg p-2 border border-border/50 flex flex-col items-center justify-center text-center">
+              <span className="text-sm font-bold text-foreground leading-none mt-0.5">{inf.tier || "-"}</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">Tier</span>
             </div>
-            <div className="bg-muted/30 rounded-lg p-2 text-center border border-border/50">
-              <span className="block font-bold text-sm md:text-base text-foreground break-words">{inf.category || "-"}</span>
-              <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide">Category</span>
+            {/* Category Full Width */}
+            <div className="col-span-2 bg-muted/30 rounded-lg p-2 border border-border/50 flex flex-col items-center justify-center text-center">
+              <span className="text-sm font-medium text-foreground leading-snug">{inf.category || "-"}</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">Category</span>
             </div>
           </div>
 
           {/* Strategy Box */}
-          <div className="bg-card/50 rounded-xl border border-border p-3 md:p-4">
-            <h5 className="text-sm font-semibold mb-2 flex items-center gap-2 text-red-500">
-              <TrendingUp className="w-4 h-4" /> Strategy & Insight
+          <div className="bg-primary/5 rounded-xl border border-primary/20 p-3">
+            <h5 className="text-xs font-bold mb-2 flex items-center gap-1.5 text-primary uppercase tracking-wide">
+              <TrendingUp className="w-3.5 h-3.5" /> Strategy & Insight
             </h5>
-            <p className="text-xs md:text-sm text-muted-foreground leading-relaxed text-left">
+            <p className="text-xs text-muted-foreground leading-relaxed text-left whitespace-pre-wrap">
               {inf.detailed_info || "No detailed strategy info available."}
             </p>
           </div>
@@ -160,7 +171,7 @@ const InfluencersSlide = () => {
         </div>
 
         {/* Influencers Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4 mb-4 md:mb-8 items-start">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-8 items-start">
           {influencers.map((inf, i) => (
             <InfluencerCard key={inf.id} inf={inf} index={i} />
           ))}
