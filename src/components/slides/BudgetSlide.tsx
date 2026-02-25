@@ -3,28 +3,26 @@ import { DollarSign, Users, FileText, Megaphone, TrendingUp } from "lucide-react
 const milestones = [
   {
     id: 1,
-    title: "Campaign Execution",
-    description: "Full strategy execution: influencers, streamers, communities, content & KPIs",
-    items: [
-      { name: "Bruno (Community Builder)", cost: "", detail: "$400" },
-      { name: "1 Community Telegram", cost: "", detail: "$300" },
-      { name: "", cost: "", detail: "" },
-    ],
-    total: "Total: $700",
-    icon: Users,
-  },
-  {
-    id: 2,
-    title: "Influencer Partnerships",
-    description: "Monthly tiers and performance-based content payments",
+    title: "Campaign Execution & Partnerships",
+    description: "Monthly tiers, performance-based content & community operations",
     items: [
       { name: "1 Top Influencer", cost: "", detail: "$1000" },
       { name: "1 Medium Influencer", cost: "", detail: "$500" },
       { name: "1 Small Influencer", cost: "", detail: "$300" },
-      { name: "", cost: "", detail: "" },
+      { name: "1 Community Telegram", cost: "", detail: "$300" },
     ],
-    total: "Total: $1,800",
+    total: "Total: $2,100",
     icon: Megaphone,
+  },
+  {
+    id: 2,
+    title: "Community Builder Strategy",
+    description: "Dedicated strategy execution and specialized community building",
+    items: [
+      { name: "Bruno (Community Builder)", cost: "", detail: "$400" },
+    ],
+    total: "Total: $400",
+    icon: Users,
   },
 ];
 
