@@ -16,7 +16,7 @@ const milestones = [
   {
     id: 2,
     title: "Influencer Partnerships",
-    description: "Monthly tiers and performance-based content payments",
+    description: "Testing 4 channels: large, medium and small influencers + community",
     items: [
       { name: "1 Top Influencer", cost: "", detail: "$1000" },
       { name: "1 Medium Influencer", cost: "", detail: "$500" },
