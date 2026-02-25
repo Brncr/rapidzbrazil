@@ -16,7 +16,7 @@ const milestones = [
   {
     id: 2,
     title: "Influencer Partnerships",
-    description: "Testing 4 channels: large, medium and small influencers + community",
+    description: "Monthly tiers and performance-based content payments",
     items: [
       { name: "1 Top Influencer", cost: "", detail: "$1000" },
       { name: "1 Medium Influencer", cost: "", detail: "$500" },
@@ -47,7 +47,7 @@ const BudgetSlide = () => {
             <span className="text-emerald-400 ml-2">Breakdown</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl font-light text-sm md:text-base">
-            Detailed cost allocation for strategic campaign
+            Testing 4 channels: large, medium and small influence + community
           </p>
         </div>
 
