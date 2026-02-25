@@ -6,11 +6,11 @@ const milestones = [
     title: "Campaign Execution",
     description: "Full strategy execution: influencers, streamers, communities, content & KPIs",
     items: [
-      { name: "Bruno (Community Builder)", cost: "", detail: "$600" },
-      { name: "2 Community Staff", cost: "", detail: "$600" },
+      { name: "Bruno (Community Builder)", cost: "", detail: "$400" },
+      { name: "1 Community Staff", cost: "", detail: "$300" },
       { name: "", cost: "", detail: "" },
     ],
-    total: "Total: $1,200",
+    total: "Total: $700",
     icon: Users,
   },
   {
@@ -18,12 +18,12 @@ const milestones = [
     title: "Influencer Partnerships",
     description: "Monthly tiers and performance-based content payments",
     items: [
-      { name: "2 Top Influencers", cost: "", detail: "$2000" },
-      { name: "2 Medium Influencers", cost: "", detail: "$1200" },
-      { name: "2 Small Influencers", cost: "", detail: "$600" },
+      { name: "1 Top Influencer", cost: "", detail: "$1000" },
+      { name: "1 Medium Influencer", cost: "", detail: "$500" },
+      { name: "1 Small Influencer", cost: "", detail: "$300" },
       { name: "", cost: "", detail: "" },
     ],
-    total: "Total: $3,800",
+    total: "Total: $1,800",
     icon: Megaphone,
   },
 ];
@@ -104,7 +104,7 @@ const BudgetSlide = () => {
               </div>
             </div>
             <div className="text-3xl md:text-4xl font-bold font-display text-white">
-              $5,000
+              $2,500
             </div>
           </div>
         </div>
