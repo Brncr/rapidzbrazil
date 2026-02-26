@@ -120,7 +120,7 @@ const Dashboard = () => {
         setStreamers(prev => [...prev, newStreamer]);
         toast.success("Streamer added!");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Error adding streamer");
     }
   };
@@ -138,7 +138,7 @@ const Dashboard = () => {
         setInfluencers(prev => [...prev, newInfluencer]);
         toast.success("Influencer added!");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Error adding influencer");
     }
   };
@@ -152,7 +152,7 @@ const Dashboard = () => {
         setCommunities(prev => [...prev, newCommunity]);
         toast.success("Community added!");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Error adding community");
     }
   };
@@ -293,7 +293,7 @@ const Dashboard = () => {
                             src={inf.image_url}
                             alt={inf.name}
                             className="w-full h-full object-cover"
-                            onError={(e) => {
+                            onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                               (e.target as HTMLImageElement).style.display = 'none';
                             }}
                           />
@@ -409,7 +409,7 @@ const Dashboard = () => {
                             src={comm.image_url}
                             alt={comm.name}
                             className="w-full h-full object-cover"
-                            onError={(e) => {
+                            onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                               (e.target as HTMLImageElement).style.display = 'none';
                             }}
                           />
@@ -509,7 +509,7 @@ const Dashboard = () => {
                             src={str.image_url}
                             alt={str.name}
                             className="w-full h-full object-cover"
-                            onError={(e) => {
+                            onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                               (e.target as HTMLImageElement).style.display = 'none';
                             }}
                           />

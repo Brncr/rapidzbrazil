@@ -1,4 +1,4 @@
-import { DollarSign, Users, FileText, Megaphone, TrendingUp } from "lucide-react";
+import { DollarSign, Users, Megaphone, TrendingUp } from "lucide-react";
 
 const milestones = [
   {
