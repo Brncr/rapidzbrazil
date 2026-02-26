@@ -65,7 +65,7 @@ const Dashboard = () => {
     // Toggle the visible property (default to true if undefined)
     const newVisible = influencer.visible === undefined ? false : !influencer.visible;
 
-    handleInfluencerFieldChange(id, "visible", newVisible as any);
+    handleInfluencerFieldChange(id, "visible", newVisible);
   };
 
   const handleInfluencerFieldChange = (id: string, field: keyof Influencer, value: string | boolean) => {
@@ -81,7 +81,7 @@ const Dashboard = () => {
 
     // Toggle visible property, default to true if undefined
     const newVisible = community.visible === undefined ? false : !community.visible;
-    handleCommunityFieldChange(id, "visible", newVisible as any);
+    handleCommunityFieldChange(id, "visible", newVisible);
   };
 
   const handleCommunityFieldChange = (id: string, field: keyof Community, value: string | boolean) => {
@@ -97,7 +97,7 @@ const Dashboard = () => {
 
     // Toggle visible property, default to true if undefined
     const newVisible = streamer.visible === undefined ? false : !streamer.visible;
-    handleStreamerFieldChange(id, "visible", newVisible as any);
+    handleStreamerFieldChange(id, "visible", newVisible);
   };
 
   const handleStreamerFieldChange = (id: string, field: keyof Streamer, value: string | boolean) => {
