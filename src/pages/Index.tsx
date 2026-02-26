@@ -4,6 +4,9 @@ import IntroSlide from "@/components/slides/IntroSlide";
 import InfluencersSlide from "@/components/slides/InfluencersSlide";
 import StreamersSlide from "@/components/slides/StreamersSlide";
 import CommunitiesSlide from "@/components/slides/CommunitiesSlide";
+import ContentPlanSlide from "@/components/slides/ContentPlanSlide";
+import OnboardingSlide from "@/components/slides/OnboardingSlide";
+import AMATopicsSlide from "@/components/slides/AMATopicsSlide";
 import BudgetSlide from "@/components/slides/BudgetSlide";
 import MetricsSlide from "@/components/slides/MetricsSlide";
 
@@ -12,6 +15,9 @@ const slides = [
   InfluencersSlide,
   StreamersSlide,
   CommunitiesSlide,
+  ContentPlanSlide,
+  OnboardingSlide,
+  AMATopicsSlide,
   BudgetSlide,
   MetricsSlide,
 ];
