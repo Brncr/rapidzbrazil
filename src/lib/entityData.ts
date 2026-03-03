@@ -39,6 +39,33 @@ export interface Streamer {
   visible?: boolean | null;
 }
 
+export type EntityType = 'influencer' | 'community' | 'streamer';
+
+export interface CreatorKPI {
+  id?: string;
+  entity_type: EntityType;
+  entity_id: string;
+  period: string;
+  // Funnel
+  impressions?: number | null;
+  clicks?: number | null;
+  telegram_members?: number | null;
+  telegram_engagement_pct?: number | null;
+  downloads?: number | null;
+  kyc_completed?: number | null;
+  first_deposit?: number | null;
+  topup?: number | null;
+  volume_usd?: number | null;
+  recurrence_pct?: number | null;
+  // Creator Performance
+  cac_per_active_user?: number | null;
+  retention_30d_pct?: number | null;
+  ltv_projected?: number | null;
+  // General
+  score?: number | null;
+  notes?: string | null;
+}
+
 // Fetch data from database
 export const getInfluencers = async (): Promise<Influencer[]> => {
   const { data, error } = await supabase
@@ -198,4 +225,137 @@ export const addCommunity = async (community: Omit<Community, "id">): Promise<Co
     throw error;
   }
   return data;
+};
+
+// Creator KPIs
+export const getCreatorKPIs = async (
+  entityType: EntityType,
+  entityId: string,
+): Promise<CreatorKPI[]> => {
+  const { data, error } = await supabase
+    .from("creator_kpis")
+    .select("*")
+    .eq("entity_type", entityType)
+    .eq("entity_id", entityId)
+    .order("period", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching creator KPIs:", error);
+    return [];
+  }
+  return (data || []) as unknown as CreatorKPI[];
+};
+
+export const upsertCreatorKPI = async (kpi: CreatorKPI): Promise<CreatorKPI | null> => {
+  const { id, ...rest } = kpi;
+
+  if (id) {
+    // Update existing
+    const { data, error } = await supabase
+      .from("creator_kpis")
+      .update({ ...rest, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error updating creator KPI:", error);
+      throw error;
+    }
+    return data as unknown as CreatorKPI;
+  } else {
+    // Insert new
+    const { data, error } = await supabase
+      .from("creator_kpis")
+      .insert(rest)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error inserting creator KPI:", error);
+      throw error;
+    }
+    return data as unknown as CreatorKPI;
+  }
+};
+
+// ==================== CREATOR POSTS ====================
+
+export type PostPlatform = 'twitter' | 'telegram' | 'youtube' | 'instagram' | 'tiktok' | 'other';
+
+export interface CreatorPost {
+  id?: string;
+  entity_type: EntityType;
+  entity_id: string;
+  platform: PostPlatform;
+  post_url: string;
+  post_date: string;
+  description?: string | null;
+  impressions: number;
+  views: number;
+  clicks: number;
+  engagement: number;
+  conversions: number;
+}
+
+export const getCreatorPosts = async (
+  entityType: EntityType,
+  entityId: string,
+): Promise<CreatorPost[]> => {
+  const { data, error } = await supabase
+    .from("creator_posts")
+    .select("*")
+    .eq("entity_type", entityType)
+    .eq("entity_id", entityId)
+    .order("post_date", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching creator posts:", error);
+    return [];
+  }
+  return (data || []) as unknown as CreatorPost[];
+};
+
+export const addCreatorPost = async (post: CreatorPost): Promise<CreatorPost | null> => {
+  const { id, ...rest } = post;
+  const { data, error } = await supabase
+    .from("creator_posts")
+    .insert(rest)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error adding creator post:", error);
+    throw error;
+  }
+  return data as unknown as CreatorPost;
+};
+
+export const updateCreatorPost = async (post: CreatorPost): Promise<CreatorPost | null> => {
+  if (!post.id) throw new Error("Post ID required for update");
+  const { id, ...rest } = post;
+  const { data, error } = await supabase
+    .from("creator_posts")
+    .update({ ...rest, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error updating creator post:", error);
+    throw error;
+  }
+  return data as unknown as CreatorPost;
+};
+
+export const deleteCreatorPost = async (postId: string): Promise<void> => {
+  const { error } = await supabase
+    .from("creator_posts")
+    .delete()
+    .eq("id", postId);
+
+  if (error) {
+    console.error("Error deleting creator post:", error);
+    throw error;
+  }
 };

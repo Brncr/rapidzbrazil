@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Twitter, Users, Tv, Save, ExternalLink, Loader2 } from "lucide-react";
+import { ArrowLeft, Twitter, Users, Tv, Save, ExternalLink, Loader2, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -384,6 +384,16 @@ const Dashboard = () => {
                         placeholder="Additional details here..."
                       />
                     </div>
+                    <Link to={`/kpis/influencer/${inf.id}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 mt-1"
+                      >
+                        <BarChart3 className="w-4 h-4" />
+                        📊 KPIs
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
@@ -484,6 +494,16 @@ const Dashboard = () => {
                         className="text-sm"
                       />
                     </div>
+                    <Link to={`/kpis/community/${comm.id}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 mt-1"
+                      >
+                        <BarChart3 className="w-4 h-4" />
+                        📊 KPIs
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
@@ -604,6 +624,16 @@ const Dashboard = () => {
                         className="text-sm"
                       />
                     </div>
+                    <Link to={`/kpis/streamer/${str.id}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 mt-1"
+                      >
+                        <BarChart3 className="w-4 h-4" />
+                        📊 KPIs
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
