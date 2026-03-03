@@ -935,6 +935,140 @@ const CreatorKPIPage: React.FC = () => {
                                         ))}
                                     </div>
 
+                                    {/* Posts chart */}
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        {/* Bar chart - metrics per post */}
+                                        <Card className="border-border/30">
+                                            <CardContent className="p-4">
+                                                <h4 className="text-xs font-semibold mb-3 flex items-center gap-2 text-muted-foreground">
+                                                    <BarChart3 className="w-3.5 h-3.5 text-primary" />
+                                                    Métricas por Post
+                                                </h4>
+                                                <div className="h-[220px]">
+                                                    <ResponsiveContainer width="100%" height="100%">
+                                                        <BarChart
+                                                            data={posts.map((p, i) => ({
+                                                                name: p.description?.slice(0, 15) || `Post ${i + 1}`,
+                                                                Impressões: p.impressions || 0,
+                                                                Views: p.views || 0,
+                                                                Cliques: p.clicks || 0,
+                                                                Engajamento: p.engagement || 0,
+                                                                Conversões: p.conversions || 0,
+                                                            }))}
+                                                            barSize={12}
+                                                        >
+                                                            <CartesianGrid strokeDasharray="3 3" stroke="hsl(0 0% 20%)" />
+                                                            <XAxis dataKey="name" tick={{ fontSize: 9, fill: "hsl(0 0% 65%)" }} />
+                                                            <YAxis tick={{ fontSize: 9, fill: "hsl(0 0% 65%)" }} />
+                                                            <Tooltip
+                                                                contentStyle={{ backgroundColor: "hsl(0 0% 10%)", border: "1px solid hsl(0 0% 20%)", borderRadius: "8px", fontSize: "11px" }}
+                                                                labelStyle={{ color: "hsl(0 0% 90%)" }}
+                                                            />
+                                                            <Bar dataKey="Impressões" fill="#818cf8" radius={[3, 3, 0, 0]} />
+                                                            <Bar dataKey="Views" fill="#60a5fa" radius={[3, 3, 0, 0]} />
+                                                            <Bar dataKey="Cliques" fill="#34d399" radius={[3, 3, 0, 0]} />
+                                                            <Bar dataKey="Engajamento" fill="#fbbf24" radius={[3, 3, 0, 0]} />
+                                                            <Bar dataKey="Conversões" fill="#f87171" radius={[3, 3, 0, 0]} />
+                                                        </BarChart>
+                                                    </ResponsiveContainer>
+                                                </div>
+                                                {/* Legend */}
+                                                <div className="flex flex-wrap gap-3 mt-2 justify-center">
+                                                    {[
+                                                        { label: "Impressões", color: "#818cf8" },
+                                                        { label: "Views", color: "#60a5fa" },
+                                                        { label: "Cliques", color: "#34d399" },
+                                                        { label: "Engajamento", color: "#fbbf24" },
+                                                        { label: "Conversões", color: "#f87171" },
+                                                    ].map((l) => (
+                                                        <div key={l.label} className="flex items-center gap-1">
+                                                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: l.color }} />
+                                                            <span className="text-[9px] text-muted-foreground">{l.label}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+
+                                        {/* Posts timeline / platform breakdown */}
+                                        <Card className="border-border/30">
+                                            <CardContent className="p-4">
+                                                <h4 className="text-xs font-semibold mb-3 flex items-center gap-2 text-muted-foreground">
+                                                    <Target className="w-3.5 h-3.5 text-primary" />
+                                                    Performance por Plataforma
+                                                </h4>
+                                                <div className="space-y-3">
+                                                    {(() => {
+                                                        const platformStats: Record<string, { impressions: number; views: number; clicks: number; count: number }> = {};
+                                                        posts.forEach((p) => {
+                                                            if (!platformStats[p.platform]) platformStats[p.platform] = { impressions: 0, views: 0, clicks: 0, count: 0 };
+                                                            platformStats[p.platform].impressions += p.impressions || 0;
+                                                            platformStats[p.platform].views += p.views || 0;
+                                                            platformStats[p.platform].clicks += p.clicks || 0;
+                                                            platformStats[p.platform].count += 1;
+                                                        });
+                                                        const maxImpressions = Math.max(...Object.values(platformStats).map((s) => s.impressions), 1);
+
+                                                        return Object.entries(platformStats).map(([platform, stats]) => {
+                                                            const info = PLATFORM_LABELS[platform as PostPlatform] || PLATFORM_LABELS.other;
+                                                            const ctr = stats.impressions > 0 ? ((stats.clicks / stats.impressions) * 100).toFixed(1) : "0";
+                                                            return (
+                                                                <div key={platform}>
+                                                                    <div className="flex items-center justify-between mb-1">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: info.color + "20", color: info.color }}>
+                                                                                {info.emoji} {info.label}
+                                                                            </span>
+                                                                            <span className="text-[10px] text-muted-foreground">{stats.count} post{stats.count > 1 ? "s" : ""}</span>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-3 text-[10px]">
+                                                                            <span className="text-muted-foreground">👁 {formatValue(stats.impressions, "number")}</span>
+                                                                            <span className="text-muted-foreground">▶ {formatValue(stats.views, "number")}</span>
+                                                                            <span className="font-bold" style={{ color: info.color }}>CTR {ctr}%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="h-3 rounded-full bg-muted/30 overflow-hidden">
+                                                                        <div
+                                                                            className="h-full rounded-full transition-all duration-500"
+                                                                            style={{
+                                                                                width: `${Math.max((stats.impressions / maxImpressions) * 100, 5)}%`,
+                                                                                backgroundColor: info.color + "60",
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        });
+                                                    })()}
+                                                </div>
+
+                                                {/* Total summary */}
+                                                <div className="mt-4 pt-3 border-t border-border/30">
+                                                    <div className="grid grid-cols-3 gap-2 text-center">
+                                                        <div>
+                                                            <p className="text-[9px] text-muted-foreground">Total Posts</p>
+                                                            <p className="text-lg font-bold text-primary">{posts.length}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[9px] text-muted-foreground">Avg. Views/Post</p>
+                                                            <p className="text-lg font-bold text-blue-400">
+                                                                {formatValue(Math.round(posts.reduce((s, p) => s + (p.views || 0), 0) / posts.length), "number")}
+                                                            </p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[9px] text-muted-foreground">CTR Geral</p>
+                                                            <p className="text-lg font-bold text-green-400">
+                                                                {posts.reduce((s, p) => s + (p.impressions || 0), 0) > 0
+                                                                    ? ((posts.reduce((s, p) => s + (p.clicks || 0), 0) / posts.reduce((s, p) => s + (p.impressions || 0), 0)) * 100).toFixed(1)
+                                                                    : "0"}%
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+
                                     {/* Post cards */}
                                     {posts.map((post) => {
                                         const platformInfo = PLATFORM_LABELS[post.platform as PostPlatform] || PLATFORM_LABELS.other;
