@@ -24,6 +24,9 @@ import {
     Trash2,
     ExternalLink,
     Link2,
+    Pencil,
+    Check,
+    X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -51,6 +54,7 @@ import {
     PostPlatform,
     getCreatorPosts,
     addCreatorPost,
+    updateCreatorPost,
     deleteCreatorPost,
 } from "@/lib/entityData";
 
@@ -227,6 +231,8 @@ const CreatorKPIPage: React.FC = () => {
     // Posts state
     const [posts, setPosts] = useState<CreatorPost[]>([]);
     const [showAddPost, setShowAddPost] = useState(false);
+    const [editingPostId, setEditingPostId] = useState<string | null>(null);
+    const [editingPost, setEditingPost] = useState<Partial<CreatorPost>>({});
     const [newPost, setNewPost] = useState<Partial<CreatorPost>>({
         platform: "twitter",
         post_url: "",
@@ -381,6 +387,39 @@ const CreatorKPIPage: React.FC = () => {
             toast.success("Post removido");
         } catch (err) {
             toast.error("Erro ao remover post");
+        }
+    };
+
+    const handleStartEditPost = (post: CreatorPost) => {
+        setEditingPostId(post.id || null);
+        setEditingPost({ ...post });
+    };
+
+    const handleSaveEditPost = async () => {
+        if (!editingPostId) return;
+        try {
+            const updated = await updateCreatorPost({
+                ...editingPost,
+                id: editingPostId,
+                entity_type: (entityType || "influencer") as EntityType,
+                entity_id: entityId || "",
+                platform: (editingPost.platform || "twitter") as PostPlatform,
+                post_url: editingPost.post_url || "",
+                post_date: editingPost.post_date || new Date().toISOString().slice(0, 10),
+                description: editingPost.description || null,
+                impressions: Number(editingPost.impressions) || 0,
+                views: Number(editingPost.views) || 0,
+                clicks: Number(editingPost.clicks) || 0,
+                engagement: Number(editingPost.engagement) || 0,
+                conversions: Number(editingPost.conversions) || 0,
+            } as CreatorPost);
+            if (updated) {
+                setPosts((prev) => prev.map((p) => (p.id === editingPostId ? updated : p)));
+                toast.success("Post atualizado!");
+            }
+            setEditingPostId(null);
+        } catch (err) {
+            toast.error("Erro ao atualizar post");
         }
     };
 
@@ -1071,74 +1110,128 @@ const CreatorKPIPage: React.FC = () => {
 
                                     {/* Post cards */}
                                     {posts.map((post) => {
-                                        const platformInfo = PLATFORM_LABELS[post.platform as PostPlatform] || PLATFORM_LABELS.other;
-                                        const embed = getPostEmbed(post.post_url, post.platform as PostPlatform);
+                                        const isEditing = editingPostId === post.id;
+                                        const ep = isEditing ? editingPost : post;
+                                        const platformInfo = PLATFORM_LABELS[(ep.platform || post.platform) as PostPlatform] || PLATFORM_LABELS.other;
+                                        const embed = !isEditing ? getPostEmbed(post.post_url, post.platform as PostPlatform) : null;
 
                                         return (
-                                            <div key={post.id} className="rounded-xl border border-border/40 bg-gradient-to-br from-card to-background overflow-hidden">
+                                            <div key={post.id} className={`rounded-xl border bg-gradient-to-br from-card to-background overflow-hidden ${isEditing ? 'border-primary/40 ring-1 ring-primary/20' : 'border-border/40'}`}>
                                                 {/* Post header */}
                                                 <div className="p-4 flex items-center justify-between">
                                                     <div className="flex items-center gap-3">
-                                                        <span
-                                                            className="text-xs font-bold px-2.5 py-1 rounded-full"
-                                                            style={{ backgroundColor: platformInfo.color + "20", color: platformInfo.color }}
-                                                        >
-                                                            {platformInfo.emoji} {platformInfo.label}
-                                                        </span>
-                                                        <span className="text-xs text-muted-foreground">
-                                                            {new Date(post.post_date + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}
-                                                        </span>
+                                                        {isEditing ? (
+                                                            <select
+                                                                value={ep.platform || "twitter"}
+                                                                onChange={(e) => setEditingPost((p) => ({ ...p, platform: e.target.value as PostPlatform }))}
+                                                                className="flex h-8 rounded-md border border-input bg-background px-2 text-xs"
+                                                            >
+                                                                {Object.entries(PLATFORM_LABELS).map(([key, val]) => (
+                                                                    <option key={key} value={key}>{val.emoji} {val.label}</option>
+                                                                ))}
+                                                            </select>
+                                                        ) : (
+                                                            <span
+                                                                className="text-xs font-bold px-2.5 py-1 rounded-full"
+                                                                style={{ backgroundColor: platformInfo.color + "20", color: platformInfo.color }}
+                                                            >
+                                                                {platformInfo.emoji} {platformInfo.label}
+                                                            </span>
+                                                        )}
+                                                        {isEditing ? (
+                                                            <Input type="date" value={ep.post_date || ""} onChange={(e) => setEditingPost((p) => ({ ...p, post_date: e.target.value }))} className="h-8 w-40 text-xs" />
+                                                        ) : (
+                                                            <span className="text-xs text-muted-foreground">
+                                                                {new Date(post.post_date + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <div className="flex items-center gap-1">
-                                                        {post.post_url && (
-                                                            <a href={post.post_url} target="_blank" rel="noopener noreferrer">
-                                                                <Button variant="ghost" size="icon" className="h-7 w-7">
-                                                                    <ExternalLink className="w-3.5 h-3.5" />
+                                                        {isEditing ? (
+                                                            <>
+                                                                <Button variant="ghost" size="icon" className="h-7 w-7 text-green-500 hover:text-green-400" onClick={() => handleSaveEditPost()}>
+                                                                    <Check className="w-3.5 h-3.5" />
                                                                 </Button>
-                                                            </a>
+                                                                <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => setEditingPostId(null)}>
+                                                                    <X className="w-3.5 h-3.5" />
+                                                                </Button>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                {post.post_url && (
+                                                                    <a href={post.post_url} target="_blank" rel="noopener noreferrer">
+                                                                        <Button variant="ghost" size="icon" className="h-7 w-7">
+                                                                            <ExternalLink className="w-3.5 h-3.5" />
+                                                                        </Button>
+                                                                    </a>
+                                                                )}
+                                                                <Button variant="ghost" size="icon" className="h-7 w-7 text-primary hover:text-primary" onClick={() => handleStartEditPost(post)}>
+                                                                    <Pencil className="w-3.5 h-3.5" />
+                                                                </Button>
+                                                                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => post.id && handleDeletePost(post.id)}>
+                                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                                </Button>
+                                                            </>
                                                         )}
-                                                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => post.id && handleDeletePost(post.id)}>
-                                                            <Trash2 className="w-3.5 h-3.5" />
-                                                        </Button>
                                                     </div>
                                                 </div>
 
-                                                {/* Description */}
-                                                {post.description && (
-                                                    <div className="px-4 pb-2">
-                                                        <p className="text-sm text-foreground/80">{post.description}</p>
+                                                {/* URL + Description */}
+                                                {isEditing ? (
+                                                    <div className="px-4 pb-3 space-y-2">
+                                                        <div>
+                                                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">🔗 Link</label>
+                                                            <Input value={ep.post_url || ""} onChange={(e) => setEditingPost((p) => ({ ...p, post_url: e.target.value }))} className="h-8 text-xs" placeholder="https://..." />
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Descrição</label>
+                                                            <Input value={ep.description || ""} onChange={(e) => setEditingPost((p) => ({ ...p, description: e.target.value }))} className="h-8 text-xs" placeholder="Descrição do post..." />
+                                                        </div>
                                                     </div>
-                                                )}
-
-                                                {/* Embedded preview */}
-                                                {embed && (
-                                                    <div className="px-4 pb-3">
-                                                        {embed}
-                                                    </div>
-                                                )}
-
-                                                {/* Link preview if no embed */}
-                                                {!embed && post.post_url && (
-                                                    <div className="mx-4 mb-3 rounded-lg border border-border/30 bg-muted/20 p-3">
-                                                        <a href={post.post_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-primary hover:underline">
-                                                            <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
-                                                            <span className="truncate">{post.post_url}</span>
-                                                        </a>
-                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        {post.description && (
+                                                            <div className="px-4 pb-2">
+                                                                <p className="text-sm text-foreground/80">{post.description}</p>
+                                                            </div>
+                                                        )}
+                                                        {embed && (
+                                                            <div className="px-4 pb-3">
+                                                                {embed}
+                                                            </div>
+                                                        )}
+                                                        {!embed && post.post_url && (
+                                                            <div className="mx-4 mb-3 rounded-lg border border-border/30 bg-muted/20 p-3">
+                                                                <a href={post.post_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-primary hover:underline">
+                                                                    <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
+                                                                    <span className="truncate">{post.post_url}</span>
+                                                                </a>
+                                                            </div>
+                                                        )}
+                                                    </>
                                                 )}
 
                                                 {/* Metrics bar */}
                                                 <div className="border-t border-border/30 bg-card/50 px-4 py-2.5 grid grid-cols-5 gap-2 text-center">
                                                     {[
-                                                        { label: "Impressões", value: post.impressions, icon: "👁" },
-                                                        { label: "Views", value: post.views, icon: "▶" },
-                                                        { label: "Cliques", value: post.clicks, icon: "🖱" },
-                                                        { label: "Engajam.", value: post.engagement, icon: "💬" },
-                                                        { label: "Conversões", value: post.conversions, icon: "🎯" },
+                                                        { key: "impressions", label: "Impressões", icon: "👁" },
+                                                        { key: "views", label: "Views", icon: "▶" },
+                                                        { key: "clicks", label: "Cliques", icon: "🖱" },
+                                                        { key: "engagement", label: "Engajam.", icon: "💬" },
+                                                        { key: "conversions", label: "Conversões", icon: "🎯" },
                                                     ].map((m) => (
-                                                        <div key={m.label}>
+                                                        <div key={m.key}>
                                                             <p className="text-[9px] text-muted-foreground">{m.icon} {m.label}</p>
-                                                            <p className="text-xs font-bold">{formatValue(m.value, "number")}</p>
+                                                            {isEditing ? (
+                                                                <Input
+                                                                    type="number"
+                                                                    value={ep[m.key as keyof CreatorPost] as number || 0}
+                                                                    onChange={(e) => setEditingPost((p) => ({ ...p, [m.key]: Number(e.target.value) }))}
+                                                                    className="h-7 text-xs text-center mt-0.5"
+                                                                />
+                                                            ) : (
+                                                                <p className="text-xs font-bold">{formatValue(post[m.key as keyof CreatorPost] as number, "number")}</p>
+                                                            )}
                                                         </div>
                                                     ))}
                                                 </div>
