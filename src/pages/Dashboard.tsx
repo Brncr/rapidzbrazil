@@ -254,7 +254,7 @@ const Dashboard = () => {
           <div className="flex items-center gap-2">
             <Link to="/evento">
               <Button variant="outline" size="sm" className="gap-2">
-                🎪 Evento Merge 2026
+                🎪 Event Merge 2026
               </Button>
             </Link>
             <Button onClick={saveAll} disabled={saving || !hasChanges} className="gap-2">
@@ -408,7 +408,7 @@ const Dashboard = () => {
                         className="w-full gap-2 mt-1"
                       >
                         <ListChecks className="w-4 h-4" />
-                        📋 Escopo
+                        📋 Scope
                       </Button>
                     </Link>
                   </CardContent>
@@ -528,7 +528,7 @@ const Dashboard = () => {
                         className="w-full gap-2 mt-1"
                       >
                         <ListChecks className="w-4 h-4" />
-                        📋 Escopo
+                        📋 Scope
                       </Button>
                     </Link>
                   </CardContent>
@@ -668,7 +668,7 @@ const Dashboard = () => {
                         className="w-full gap-2 mt-1"
                       >
                         <ListChecks className="w-4 h-4" />
-                        📋 Escopo
+                        📋 Scope
                       </Button>
                     </Link>
                   </CardContent>
