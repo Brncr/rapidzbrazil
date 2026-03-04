@@ -660,8 +660,9 @@ const CreatorKPIPage: React.FC = () => {
                                                 </div>
 
                                                 {/* Label */}
-                                                <div className="w-32 flex-shrink-0">
-                                                    <span className="text-xs font-medium">{step.label}</span>
+                                                <div className="w-16 sm:w-32 flex-shrink-0">
+                                                    <span className="text-xs font-medium hidden sm:inline">{step.label}</span>
+                                                    <span className="text-[10px] font-medium sm:hidden">{step.shortLabel}</span>
                                                 </div>
 
                                                 {/* Bar */}
@@ -695,7 +696,7 @@ const CreatorKPIPage: React.FC = () => {
                                                 </div>
 
                                                 {/* Conversion rate badge */}
-                                                <div className="w-28 flex-shrink-0 text-right">
+                                                <div className="hidden sm:block w-28 flex-shrink-0 text-right">
                                                     {conversionRate && conversionRate !== "—" && !editMode && (
                                                         <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                                                             conv: {conversionRate}
@@ -1212,7 +1213,7 @@ const CreatorKPIPage: React.FC = () => {
                                                 )}
 
                                                 {/* Metrics bar */}
-                                                <div className="border-t border-border/30 bg-card/50 px-4 py-2.5 grid grid-cols-5 gap-2 text-center">
+                                                <div className="border-t border-border/30 bg-card/50 px-3 sm:px-4 py-2.5 grid grid-cols-3 sm:grid-cols-5 gap-2 text-center">
                                                     {[
                                                         { key: "impressions", label: "Impressões", icon: "👁" },
                                                         { key: "views", label: "Views", icon: "▶" },

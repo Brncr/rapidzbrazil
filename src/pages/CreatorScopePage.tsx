@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
     ArrowLeft,
@@ -15,6 +15,9 @@ import {
     Flag,
     ListChecks,
     Clipboard,
+    MessageSquare,
+    GripVertical,
+    Send,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,7 +40,28 @@ import {
     getInfluencers,
     getCommunities,
     getStreamers,
+    Influencer,
+    Community,
+    Streamer,
+    TaskComment,
+    getTaskComments,
+    addTaskComment,
+    deleteTaskComment,
 } from "@/lib/entityData";
+import {
+    DndContext,
+    closestCorners,
+    DragOverlay,
+    useSensor,
+    useSensors,
+    PointerSensor,
+    TouchSensor,
+    DragStartEvent,
+    DragEndEvent,
+} from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 // ==================== CONSTANTS ====================
 
@@ -103,19 +127,30 @@ const CreatorScopePage: React.FC = () => {
     const [editingScopeId, setEditingScopeId] = useState<string | null>(null);
     const [editingScope, setEditingScope] = useState<Partial<CreatorScope>>({});
 
-    useEffect(() => {
-        if (entityType && entityId) loadData();
-    }, [entityType, entityId, period]);
+    // Task detail modal
+    const [selectedTask, setSelectedTask] = useState<CreatorTask | null>(null);
+    const [taskComments, setTaskComments] = useState<TaskComment[]>([]);
+    const [newComment, setNewComment] = useState("");
+    const [editingTask, setEditingTask] = useState<Partial<CreatorTask>>({});
+    const [loadingComments, setLoadingComments] = useState(false);
+
+    // Drag state
+    const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+        useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
+    );
 
     const loadData = async () => {
         setLoading(true);
         try {
             // Get entity name
-            let entities: any[] = [];
+            let entities: (Influencer | Community | Streamer)[] = [];
             if (entityType === "influencer") entities = await getInfluencers();
             else if (entityType === "community") entities = await getCommunities();
             else if (entityType === "streamer") entities = await getStreamers();
-            const ent = entities.find((e: any) => e.id === entityId);
+            const ent = entities.find((e) => e.id === entityId);
             if (ent) {
                 setEntityName(ent.name || "");
                 setEntityImage(ent.image_url || "");
@@ -134,6 +169,11 @@ const CreatorScopePage: React.FC = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (entityType && entityId) loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [entityType, entityId, period]);
 
     // ==================== HANDLERS ====================
 
@@ -233,9 +273,86 @@ const CreatorScopePage: React.FC = () => {
         try {
             await deleteCreatorTask(taskId);
             setTasks((prev) => prev.filter((t) => t.id !== taskId));
+            if (selectedTask?.id === taskId) setSelectedTask(null);
             toast.success("Tarefa removida");
         } catch (err) {
             toast.error("Erro ao remover tarefa");
+        }
+    };
+
+    // Drag & drop handler
+    const handleDragStart = (event: DragStartEvent) => {
+        setActiveTaskId(event.active.id as string);
+    };
+
+    const handleDragEnd = async (event: DragEndEvent) => {
+        setActiveTaskId(null);
+        const { active, over } = event;
+        if (!over) return;
+        const taskId = active.id as string;
+        const newStatus = over.id as TaskStatus;
+        const task = tasks.find((t) => t.id === taskId);
+        if (!task || task.status === newStatus) return;
+        await handleUpdateTaskStatus(task, newStatus);
+    };
+
+    // Task detail modal handlers
+    const openTaskDetail = async (task: CreatorTask) => {
+        setSelectedTask(task);
+        setEditingTask({ ...task });
+        if (task.id) {
+            setLoadingComments(true);
+            try {
+                const comments = await getTaskComments(task.id);
+                setTaskComments(comments);
+            } catch {
+                setTaskComments([]);
+            } finally {
+                setLoadingComments(false);
+            }
+        }
+    };
+
+    const handleSaveTaskEdit = async () => {
+        if (!selectedTask?.id) return;
+        try {
+            const updated = await updateCreatorTask({
+                ...selectedTask,
+                ...editingTask,
+            } as CreatorTask);
+            if (updated) {
+                setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+                setSelectedTask(updated);
+                toast.success("Tarefa atualizada!");
+            }
+        } catch {
+            toast.error("Erro ao atualizar tarefa");
+        }
+    };
+
+    const handleAddComment = async () => {
+        if (!newComment.trim() || !selectedTask?.id) return;
+        try {
+            const comment = await addTaskComment({
+                task_id: selectedTask.id,
+                content: newComment.trim(),
+                author: "Admin",
+            });
+            if (comment) {
+                setTaskComments((prev) => [...prev, comment]);
+                setNewComment("");
+            }
+        } catch {
+            toast.error("Erro ao adicionar comentário");
+        }
+    };
+
+    const handleDeleteComment = async (commentId: string) => {
+        try {
+            await deleteTaskComment(commentId);
+            setTaskComments((prev) => prev.filter((c) => c.id !== commentId));
+        } catch {
+            toast.error("Erro ao remover comentário");
         }
     };
 
@@ -273,7 +390,7 @@ const CreatorScopePage: React.FC = () => {
         <>
             <div className="min-h-screen bg-background p-4 sm:p-6 max-w-6xl mx-auto">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6 print:mb-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 print:mb-2">
                     <div className="flex items-center gap-4">
                         <Link to="/dashboard">
                             <Button variant="ghost" size="icon"><ArrowLeft className="w-5 h-5" /></Button>
@@ -288,12 +405,12 @@ const CreatorScopePage: React.FC = () => {
                             <p className="text-xs text-muted-foreground">{entityName}</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
                         <Input
                             type="month"
                             value={period}
                             onChange={(e) => setPeriod(e.target.value)}
-                            className="h-9 w-40 text-sm"
+                            className="h-9 flex-1 sm:flex-none sm:w-40 text-sm"
                         />
                         <Link to={`/kpis/${entityType}/${entityId}`}>
                             <Button variant="outline" size="sm" className="gap-2">
@@ -582,7 +699,7 @@ const CreatorScopePage: React.FC = () => {
                         </Card>
                     )}
 
-                    {/* Kanban columns */}
+                    {/* Kanban columns with drag & drop */}
                     {tasks.length === 0 ? (
                         <Card>
                             <CardContent className="p-8 text-center text-muted-foreground/50">
@@ -592,105 +709,352 @@ const CreatorScopePage: React.FC = () => {
                             </CardContent>
                         </Card>
                     ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                            {(["pending", "in_progress", "done"] as TaskStatus[]).map((status) => {
-                                const config = STATUS_CONFIG[status];
-                                const columnTasks = tasks.filter((t) => t.status === status);
-                                const nextStatus = cycleStatus(status);
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCorners}
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
+                        >
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                {(["pending", "in_progress", "done"] as TaskStatus[]).map((status) => {
+                                    const config = STATUS_CONFIG[status];
+                                    const columnTasks = tasks.filter((t) => t.status === status);
 
-                                return (
-                                    <div key={status} className="space-y-2">
-                                        {/* Column header */}
-                                        <div className="flex items-center justify-between px-2 py-2 rounded-lg" style={{ backgroundColor: config.bg }}>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm">{config.emoji}</span>
-                                                <span className="text-xs font-bold" style={{ color: config.color }}>{config.label}</span>
-                                            </div>
-                                            <span className="text-[10px] font-bold rounded-full px-2 py-0.5" style={{ backgroundColor: config.color + "20", color: config.color }}>
-                                                {columnTasks.length}
-                                            </span>
+                                    return (
+                                        <DroppableColumn key={status} id={status} config={config} count={columnTasks.length}>
+                                            {columnTasks.map((task) => (
+                                                <DraggableTaskCard
+                                                    key={task.id}
+                                                    task={task}
+                                                    isDragging={activeTaskId === task.id}
+                                                    onOpenDetail={() => openTaskDetail(task)}
+                                                    onDelete={() => task.id && handleDeleteTask(task.id)}
+                                                    onMoveNext={() => handleUpdateTaskStatus(task, cycleStatus(task.status as TaskStatus))}
+                                                    nextStatusLabel={
+                                                        cycleStatus(task.status as TaskStatus) === "in_progress" ? "▶ Iniciar"
+                                                            : cycleStatus(task.status as TaskStatus) === "done" ? "✓ Concluir"
+                                                                : "↩ Voltar"
+                                                    }
+                                                    nextStatusConfig={STATUS_CONFIG[cycleStatus(task.status as TaskStatus)]}
+                                                />
+                                            ))}
+                                            {columnTasks.length === 0 && (
+                                                <div className="border border-dashed border-border/30 rounded-lg p-6 text-center">
+                                                    <p className="text-[10px] text-muted-foreground/40">Arraste tarefas aqui</p>
+                                                </div>
+                                            )}
+                                        </DroppableColumn>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Drag overlay */}
+                            <DragOverlay>
+                                {activeTaskId ? (() => {
+                                    const task = tasks.find((t) => t.id === activeTaskId);
+                                    if (!task) return null;
+                                    return (
+                                        <div className="bg-card border-2 border-primary/50 rounded-xl p-3 shadow-2xl opacity-90 rotate-2 max-w-[280px]">
+                                            <p className="text-xs font-medium">{task.title}</p>
                                         </div>
-
-                                        {/* Task cards */}
-                                        {columnTasks.map((task) => {
-                                            const platformInfo = getPlatformInfo(task.platform);
-                                            const priorityInfo = PRIORITY_CONFIG[task.priority as TaskPriority] || PRIORITY_CONFIG.medium;
-                                            const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.status !== "done";
-
-                                            return (
-                                                <Card key={task.id} className={`border-border/30 hover:border-border/60 transition-all group ${isOverdue ? "border-red-500/30" : ""}`}>
-                                                    <CardContent className="p-3 space-y-2">
-                                                        {/* Top row: platform + priority + actions */}
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-center gap-1.5">
-                                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: platformInfo.color + "15", color: platformInfo.color }}>
-                                                                    {platformInfo.emoji}
-                                                                </span>
-                                                                <span className="text-[10px]">{priorityInfo.emoji}</span>
-                                                            </div>
-                                                            <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                <Button
-                                                                    variant="ghost" size="icon" className="h-6 w-6"
-                                                                    title={`Mover para ${STATUS_CONFIG[nextStatus].label}`}
-                                                                    onClick={() => handleUpdateTaskStatus(task, nextStatus)}
-                                                                >
-                                                                    <ChevronRight className="w-3 h-3" />
-                                                                </Button>
-                                                                <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => task.id && handleDeleteTask(task.id)}>
-                                                                    <Trash2 className="w-3 h-3" />
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Title */}
-                                                        <p className={`text-xs font-medium leading-snug ${task.status === "done" ? "line-through text-muted-foreground" : ""}`}>
-                                                            {task.title}
-                                                        </p>
-
-                                                        {/* Notes */}
-                                                        {task.notes && (
-                                                            <p className="text-[10px] text-muted-foreground/70 italic">{task.notes}</p>
-                                                        )}
-
-                                                        {/* Bottom: due date + move button */}
-                                                        <div className="flex items-center justify-between">
-                                                            {task.due_date ? (
-                                                                <span className={`text-[9px] flex items-center gap-1 ${isOverdue ? "text-red-400 font-bold" : "text-muted-foreground"}`}>
-                                                                    <CalendarDays className="w-3 h-3" />
-                                                                    {new Date(task.due_date + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
-                                                                    {isOverdue && " ⚠️"}
-                                                                </span>
-                                                            ) : (
-                                                                <span />
-                                                            )}
-                                                            <button
-                                                                onClick={() => handleUpdateTaskStatus(task, nextStatus)}
-                                                                className="text-[9px] font-medium px-2 py-0.5 rounded-full transition-all hover:scale-105"
-                                                                style={{ backgroundColor: STATUS_CONFIG[nextStatus].color + "15", color: STATUS_CONFIG[nextStatus].color }}
-                                                            >
-                                                                {nextStatus === "in_progress" && "▶ Iniciar"}
-                                                                {nextStatus === "done" && "✓ Concluir"}
-                                                                {nextStatus === "pending" && "↩ Voltar"}
-                                                            </button>
-                                                        </div>
-                                                    </CardContent>
-                                                </Card>
-                                            );
-                                        })}
-
-                                        {columnTasks.length === 0 && (
-                                            <div className="border border-dashed border-border/30 rounded-lg p-4 text-center">
-                                                <p className="text-[10px] text-muted-foreground/40">Sem tarefas</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                    );
+                                })() : null}
+                            </DragOverlay>
+                        </DndContext>
                     )}
                 </div>
+
+                {/* Task Detail Modal */}
+                {selectedTask && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setSelectedTask(null)}>
+                        <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                            {/* Modal header */}
+                            <div className="flex items-center justify-between p-4 border-b border-border">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm">{getPlatformInfo(selectedTask.platform).emoji}</span>
+                                    <h3 className="font-semibold text-sm">Detalhes da Tarefa</h3>
+                                </div>
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSelectedTask(null)}>
+                                    <X className="w-4 h-4" />
+                                </Button>
+                            </div>
+
+                            {/* Modal body */}
+                            <div className="p-4 space-y-4">
+                                {/* Title */}
+                                <div>
+                                    <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Título</label>
+                                    <Input
+                                        value={editingTask.title || ""}
+                                        onChange={(e) => setEditingTask((p) => ({ ...p, title: e.target.value }))}
+                                        className="h-9 text-sm font-medium"
+                                    />
+                                </div>
+
+                                {/* Platform, Priority, Status row */}
+                                <div className="grid grid-cols-3 gap-3">
+                                    <div>
+                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Plataforma</label>
+                                        <select
+                                            value={editingTask.platform || "twitter"}
+                                            onChange={(e) => setEditingTask((p) => ({ ...p, platform: e.target.value as PostPlatform }))}
+                                            className="flex h-9 w-full rounded-md border border-input bg-background px-2 text-xs"
+                                        >
+                                            {PLATFORMS.map((p) => <option key={p.key} value={p.key}>{p.emoji} {p.label}</option>)}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Prioridade</label>
+                                        <select
+                                            value={editingTask.priority || "medium"}
+                                            onChange={(e) => setEditingTask((p) => ({ ...p, priority: e.target.value as TaskPriority }))}
+                                            className="flex h-9 w-full rounded-md border border-input bg-background px-2 text-xs"
+                                        >
+                                            {Object.entries(PRIORITY_CONFIG).map(([key, val]) => <option key={key} value={key}>{val.emoji} {val.label}</option>)}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Status</label>
+                                        <select
+                                            value={editingTask.status || "pending"}
+                                            onChange={(e) => setEditingTask((p) => ({ ...p, status: e.target.value as TaskStatus }))}
+                                            className="flex h-9 w-full rounded-md border border-input bg-background px-2 text-xs"
+                                        >
+                                            {Object.entries(STATUS_CONFIG).map(([key, val]) => <option key={key} value={key}>{val.emoji} {val.label}</option>)}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Due date + Notes */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">📅 Data Limite</label>
+                                        <Input
+                                            type="date"
+                                            value={editingTask.due_date || ""}
+                                            onChange={(e) => setEditingTask((p) => ({ ...p, due_date: e.target.value }))}
+                                            className="h-9 text-sm"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">📝 Notas</label>
+                                        <Input
+                                            value={editingTask.notes || ""}
+                                            onChange={(e) => setEditingTask((p) => ({ ...p, notes: e.target.value }))}
+                                            placeholder="Detalhes..."
+                                            className="h-9 text-sm"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Save button */}
+                                <Button size="sm" className="w-full gap-2" onClick={handleSaveTaskEdit}>
+                                    <Check className="w-4 h-4" /> Salvar Alterações
+                                </Button>
+
+                                {/* Comments Section */}
+                                <div className="border-t border-border pt-4">
+                                    <h4 className="text-xs font-semibold flex items-center gap-2 mb-3">
+                                        <MessageSquare className="w-3.5 h-3.5 text-primary" />
+                                        Comentários ({taskComments.length})
+                                    </h4>
+
+                                    {loadingComments ? (
+                                        <div className="flex justify-center py-4">
+                                            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2 max-h-48 overflow-y-auto mb-3">
+                                            {taskComments.length === 0 && (
+                                                <p className="text-[10px] text-muted-foreground/50 text-center py-2">Sem comentários ainda</p>
+                                            )}
+                                            {taskComments.map((comment) => (
+                                                <div key={comment.id} className="group flex gap-2 p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                                                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                                                        <span className="text-[9px] font-bold text-primary">{comment.author?.[0] || "A"}</span>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-[10px] font-semibold">{comment.author || "Admin"}</span>
+                                                            <span className="text-[9px] text-muted-foreground">
+                                                                {comment.created_at && new Date(comment.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-[11px] text-foreground/80 mt-0.5 break-words">{comment.content}</p>
+                                                    </div>
+                                                    <Button
+                                                        variant="ghost" size="icon"
+                                                        className="h-5 w-5 opacity-0 group-hover:opacity-100 shrink-0"
+                                                        onClick={() => comment.id && handleDeleteComment(comment.id)}
+                                                    >
+                                                        <Trash2 className="w-3 h-3 text-destructive" />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Add comment */}
+                                    <div className="flex gap-2">
+                                        <Input
+                                            value={newComment}
+                                            onChange={(e) => setNewComment(e.target.value)}
+                                            onKeyDown={(e) => e.key === "Enter" && handleAddComment()}
+                                            placeholder="Escreva um comentário..."
+                                            className="h-8 text-xs flex-1"
+                                        />
+                                        <Button size="sm" className="h-8 px-3" onClick={handleAddComment} disabled={!newComment.trim()}>
+                                            <Send className="w-3.5 h-3.5" />
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {/* Delete task */}
+                                <div className="border-t border-border pt-3">
+                                    <Button
+                                        variant="ghost" size="sm"
+                                        className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 gap-2"
+                                        onClick={() => { selectedTask.id && handleDeleteTask(selectedTask.id); }}
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" /> Excluir Tarefa
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
+    );
+};
+
+// ==================== SUB-COMPONENTS ====================
+
+/** Droppable column for the Kanban board */
+const DroppableColumn: React.FC<{
+    id: string;
+    config: { label: string; emoji: string; color: string; bg: string };
+    count: number;
+    children: React.ReactNode;
+}> = ({ id, config, count, children }) => {
+    const { setNodeRef, isOver } = useDroppable({ id });
+
+    return (
+        <div
+            ref={setNodeRef}
+            className={`space-y-2 rounded-xl p-2 transition-all min-h-[120px] ${isOver ? "ring-2 ring-primary/40 bg-primary/5" : ""}`}
+        >
+            {/* Column header */}
+            <div className="flex items-center justify-between px-2 py-2 rounded-lg" style={{ backgroundColor: config.bg }}>
+                <div className="flex items-center gap-2">
+                    <span className="text-sm">{config.emoji}</span>
+                    <span className="text-xs font-bold" style={{ color: config.color }}>{config.label}</span>
+                </div>
+                <span className="text-[10px] font-bold rounded-full px-2 py-0.5" style={{ backgroundColor: config.color + "20", color: config.color }}>
+                    {count}
+                </span>
+            </div>
+            {children}
+        </div>
+    );
+};
+
+/** Draggable task card */
+const DraggableTaskCard: React.FC<{
+    task: CreatorTask;
+    isDragging: boolean;
+    onOpenDetail: () => void;
+    onDelete: () => void;
+    onMoveNext: () => void;
+    nextStatusLabel: string;
+    nextStatusConfig: { color: string };
+}> = ({ task, isDragging, onOpenDetail, onDelete, onMoveNext, nextStatusLabel, nextStatusConfig }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: task.id || "" });
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.3 : 1,
+    };
+
+    const PLATFORMS_MAP: Record<string, { emoji: string; color: string }> = {
+        twitter: { emoji: "🐦", color: "#1da1f2" },
+        telegram: { emoji: "📱", color: "#0088cc" },
+        youtube: { emoji: "🎥", color: "#ff0000" },
+        instagram: { emoji: "📸", color: "#e1306c" },
+        tiktok: { emoji: "🎵", color: "#ff0050" },
+        other: { emoji: "🔗", color: "#94a3b8" },
+    };
+
+    const PRIORITY_MAP: Record<string, { emoji: string }> = {
+        low: { emoji: "🟢" },
+        medium: { emoji: "🟡" },
+        high: { emoji: "🔴" },
+    };
+
+    const platformInfo = PLATFORMS_MAP[task.platform] || PLATFORMS_MAP.other;
+    const priorityInfo = PRIORITY_MAP[task.priority] || PRIORITY_MAP.medium;
+    const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.status !== "done";
+
+    return (
+        <div ref={setNodeRef} style={style} {...attributes}>
+            <Card className={`border-border/30 hover:border-border/60 transition-all group cursor-pointer ${isOverdue ? "border-red-500/30" : ""}`}>
+                <CardContent className="p-3 space-y-2">
+                    {/* Top row: grip + platform + priority + actions */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                            <span {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground touch-none">
+                                <GripVertical className="w-3.5 h-3.5" />
+                            </span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: platformInfo.color + "15", color: platformInfo.color }}>
+                                {platformInfo.emoji}
+                            </span>
+                            <span className="text-[10px]">{priorityInfo.emoji}</span>
+                        </div>
+                        <div className="flex items-center gap-0.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onMoveNext(); }}>
+                                <ChevronRight className="w-3 h-3" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={(e) => { e.stopPropagation(); onDelete(); }}>
+                                <Trash2 className="w-3 h-3" />
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Title — clickable to open detail */}
+                    <p
+                        className={`text-xs font-medium leading-snug cursor-pointer hover:text-primary transition-colors ${task.status === "done" ? "line-through text-muted-foreground" : ""}`}
+                        onClick={onOpenDetail}
+                    >
+                        {task.title}
+                    </p>
+
+                    {/* Notes */}
+                    {task.notes && (
+                        <p className="text-[10px] text-muted-foreground/70 italic">{task.notes}</p>
+                    )}
+
+                    {/* Bottom: due date + move button */}
+                    <div className="flex items-center justify-between">
+                        {task.due_date ? (
+                            <span className={`text-[9px] flex items-center gap-1 ${isOverdue ? "text-red-400 font-bold" : "text-muted-foreground"}`}>
+                                <CalendarDays className="w-3 h-3" />
+                                {new Date(task.due_date + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
+                                {isOverdue && " ⚠️"}
+                            </span>
+                        ) : (
+                            <span />
+                        )}
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onMoveNext(); }}
+                            className="text-[9px] font-medium px-2 py-0.5 rounded-full transition-all hover:scale-105"
+                            style={{ backgroundColor: nextStatusConfig.color + "15", color: nextStatusConfig.color }}
+                        >
+                            {nextStatusLabel}
+                        </button>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
     );
 };
 

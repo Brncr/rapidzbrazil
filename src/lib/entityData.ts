@@ -468,3 +468,173 @@ export const deleteCreatorTask = async (taskId: string): Promise<void> => {
   const { error } = await supabase.from("creator_tasks").delete().eq("id", taskId);
   if (error) { console.error("Error deleting task:", error); throw error; }
 };
+
+// ==================== TASK COMMENTS ====================
+
+export interface TaskComment {
+  id?: string;
+  task_id: string;
+  content: string;
+  author: string;
+  created_at?: string;
+}
+
+export const getTaskComments = async (taskId: string): Promise<TaskComment[]> => {
+  const { data, error } = await supabase
+    .from("task_comments")
+    .select("*")
+    .eq("task_id", taskId)
+    .order("created_at", { ascending: true });
+
+  if (error) { console.error("Error fetching comments:", error); throw error; }
+  return (data as unknown as TaskComment[]) || [];
+};
+
+export const addTaskComment = async (comment: Omit<TaskComment, 'id'>): Promise<TaskComment | null> => {
+  const { data, error } = await supabase
+    .from("task_comments")
+    .insert([comment])
+    .select()
+    .single();
+
+  if (error) { console.error("Error adding comment:", error); throw error; }
+  return data as unknown as TaskComment;
+};
+
+export const deleteTaskComment = async (commentId: string): Promise<void> => {
+  const { error } = await supabase.from("task_comments").delete().eq("id", commentId);
+  if (error) { console.error("Error deleting comment:", error); throw error; }
+};
+
+// ==================== EVENT PLANS ====================
+
+export interface EventPlan {
+  id?: string;
+  name: string;
+  location?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  days?: number;
+  description?: string | null;
+  created_at?: string;
+}
+
+export interface EventInfluencer {
+  id?: string;
+  event_id: string;
+  influencer_id: string;
+  influencer_name: string;
+  influencer_image?: string | null;
+  travel_aid?: number;
+  confirmed?: boolean;
+  notes?: string | null;
+}
+
+export interface EventExpense {
+  id?: string;
+  event_id: string;
+  category: string;
+  description?: string | null;
+  amount: number;
+  per_day?: boolean;
+}
+
+export interface EventActivity {
+  id?: string;
+  event_id: string;
+  title: string;
+  platform?: string | null;
+  type?: string | null;
+  description?: string | null;
+  required?: boolean;
+}
+
+// Event plans CRUD
+export const getEventPlans = async (): Promise<EventPlan[]> => {
+  const { data, error } = await supabase.from("event_plans").select("*").order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data as unknown as EventPlan[]) || [];
+};
+
+export const upsertEventPlan = async (plan: EventPlan): Promise<EventPlan | null> => {
+  const { data, error } = await supabase.from("event_plans").upsert([plan]).select().single();
+  if (error) throw error;
+  return data as unknown as EventPlan;
+};
+
+export const deleteEventPlan = async (id: string): Promise<void> => {
+  const { error } = await supabase.from("event_plans").delete().eq("id", id);
+  if (error) throw error;
+};
+
+// Event influencers CRUD
+export const getEventInfluencers = async (eventId: string): Promise<EventInfluencer[]> => {
+  const { data, error } = await supabase.from("event_influencers").select("*").eq("event_id", eventId);
+  if (error) throw error;
+  return (data as unknown as EventInfluencer[]) || [];
+};
+
+export const addEventInfluencer = async (inf: EventInfluencer): Promise<EventInfluencer | null> => {
+  const { data, error } = await supabase.from("event_influencers").insert([inf]).select().single();
+  if (error) throw error;
+  return data as unknown as EventInfluencer;
+};
+
+export const updateEventInfluencer = async (inf: EventInfluencer): Promise<EventInfluencer | null> => {
+  const { data, error } = await supabase.from("event_influencers").update(inf).eq("id", inf.id).select().single();
+  if (error) throw error;
+  return data as unknown as EventInfluencer;
+};
+
+export const deleteEventInfluencer = async (id: string): Promise<void> => {
+  const { error } = await supabase.from("event_influencers").delete().eq("id", id);
+  if (error) throw error;
+};
+
+// Event expenses CRUD
+export const getEventExpenses = async (eventId: string): Promise<EventExpense[]> => {
+  const { data, error } = await supabase.from("event_expenses").select("*").eq("event_id", eventId);
+  if (error) throw error;
+  return (data as unknown as EventExpense[]) || [];
+};
+
+export const addEventExpense = async (exp: EventExpense): Promise<EventExpense | null> => {
+  const { data, error } = await supabase.from("event_expenses").insert([exp]).select().single();
+  if (error) throw error;
+  return data as unknown as EventExpense;
+};
+
+export const updateEventExpense = async (exp: EventExpense): Promise<EventExpense | null> => {
+  const { data, error } = await supabase.from("event_expenses").update(exp).eq("id", exp.id).select().single();
+  if (error) throw error;
+  return data as unknown as EventExpense;
+};
+
+export const deleteEventExpense = async (id: string): Promise<void> => {
+  const { error } = await supabase.from("event_expenses").delete().eq("id", id);
+  if (error) throw error;
+};
+
+// Event activities CRUD
+export const getEventActivities = async (eventId: string): Promise<EventActivity[]> => {
+  const { data, error } = await supabase.from("event_activities").select("*").eq("event_id", eventId);
+  if (error) throw error;
+  return (data as unknown as EventActivity[]) || [];
+};
+
+export const addEventActivity = async (act: EventActivity): Promise<EventActivity | null> => {
+  const { data, error } = await supabase.from("event_activities").insert([act]).select().single();
+  if (error) throw error;
+  return data as unknown as EventActivity;
+};
+
+export const updateEventActivity = async (act: EventActivity): Promise<EventActivity | null> => {
+  const { data, error } = await supabase.from("event_activities").update(act).eq("id", act.id).select().single();
+  if (error) throw error;
+  return data as unknown as EventActivity;
+};
+
+export const deleteEventActivity = async (id: string): Promise<void> => {
+  const { error } = await supabase.from("event_activities").delete().eq("id", id);
+  if (error) throw error;
+};

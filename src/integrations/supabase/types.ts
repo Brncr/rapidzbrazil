@@ -24,6 +24,7 @@ export type Database = {
           name: string
           twitter_handle: string | null
           updated_at: string
+          visible: boolean | null
           website_url: string | null
         }
         Insert: {
@@ -35,6 +36,7 @@ export type Database = {
           name: string
           twitter_handle?: string | null
           updated_at?: string
+          visible?: boolean | null
           website_url?: string | null
         }
         Update: {
@@ -46,6 +48,7 @@ export type Database = {
           name?: string
           twitter_handle?: string | null
           updated_at?: string
+          visible?: boolean | null
           website_url?: string | null
         }
         Relationships: []
@@ -276,6 +279,8 @@ export type Database = {
           name: string
           tier: string | null
           updated_at: string
+          visible: boolean | null
+          detailed_info: string | null
         }
         Insert: {
           category: string
@@ -288,6 +293,8 @@ export type Database = {
           name: string
           tier?: string | null
           updated_at?: string
+          visible?: boolean | null
+          detailed_info?: string | null
         }
         Update: {
           category?: string
@@ -300,6 +307,8 @@ export type Database = {
           name?: string
           tier?: string | null
           updated_at?: string
+          visible?: boolean | null
+          detailed_info?: string | null
         }
         Relationships: []
       }
@@ -316,6 +325,7 @@ export type Database = {
           twitch_url: string | null
           twitter_handle: string | null
           updated_at: string
+          visible: boolean | null
           youtube_url: string | null
         }
         Insert: {
@@ -330,6 +340,7 @@ export type Database = {
           twitch_url?: string | null
           twitter_handle?: string | null
           updated_at?: string
+          visible?: boolean | null
           youtube_url?: string | null
         }
         Update: {
@@ -344,7 +355,155 @@ export type Database = {
           twitch_url?: string | null
           twitter_handle?: string | null
           updated_at?: string
+          visible?: boolean | null
           youtube_url?: string | null
+        }
+        Relationships: []
+      }
+      task_comments: {
+        Row: {
+          id: string
+          task_id: string
+          content: string
+          author: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          task_id: string
+          content: string
+          author?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          task_id?: string
+          content?: string
+          author?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      event_plans: {
+        Row: {
+          id: string
+          name: string
+          location: string | null
+          start_date: string | null
+          end_date: string | null
+          days: number
+          description: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          location?: string | null
+          start_date?: string | null
+          end_date?: string | null
+          days?: number
+          description?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          location?: string | null
+          start_date?: string | null
+          end_date?: string | null
+          days?: number
+          description?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+      event_influencers: {
+        Row: {
+          id: string
+          event_id: string
+          influencer_id: string
+          influencer_name: string
+          influencer_image: string | null
+          travel_aid: number
+          confirmed: boolean
+          notes: string | null
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          influencer_id: string
+          influencer_name: string
+          influencer_image?: string | null
+          travel_aid?: number
+          confirmed?: boolean
+          notes?: string | null
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          influencer_id?: string
+          influencer_name?: string
+          influencer_image?: string | null
+          travel_aid?: number
+          confirmed?: boolean
+          notes?: string | null
+        }
+        Relationships: []
+      }
+      event_expenses: {
+        Row: {
+          id: string
+          event_id: string
+          category: string
+          description: string | null
+          amount: number
+          per_day: boolean
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          category: string
+          description?: string | null
+          amount: number
+          per_day?: boolean
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          category?: string
+          description?: string | null
+          amount?: number
+          per_day?: boolean
+        }
+        Relationships: []
+      }
+      event_activities: {
+        Row: {
+          id: string
+          event_id: string
+          title: string
+          platform: string | null
+          type: string | null
+          description: string | null
+          required: boolean
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          title: string
+          platform?: string | null
+          type?: string | null
+          description?: string | null
+          required?: boolean
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          title?: string
+          platform?: string | null
+          type?: string | null
+          description?: string | null
+          required?: boolean
         }
         Relationships: []
       }

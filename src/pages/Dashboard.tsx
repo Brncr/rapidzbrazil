@@ -236,10 +236,10 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 sm:mb-8">
           <div className="flex items-center gap-4">
             <Link to="/">
               <Button variant="ghost" size="icon">
@@ -251,25 +251,32 @@ const Dashboard = () => {
               <p className="text-muted-foreground text-sm">Manage photos for presentation cards</p>
             </div>
           </div>
-          <Button onClick={saveAll} disabled={saving || !hasChanges} className="gap-2">
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {hasChanges ? "Save Changes" : "Saved"}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link to="/evento">
+              <Button variant="outline" size="sm" className="gap-2">
+                🎪 Evento Merge 2026
+              </Button>
+            </Link>
+            <Button onClick={saveAll} disabled={saving || !hasChanges} className="gap-2">
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              {hasChanges ? "Save Changes" : "Saved"}
+            </Button>
+          </div>
         </div>
 
         {/* Tabs */}
         <Tabs defaultValue="influencers" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="influencers" className="gap-2">
-              <Twitter className="w-4 h-4" />
+          <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6">
+            <TabsTrigger value="influencers" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Twitter className="w-4 h-4 hidden sm:block" />
               Influencers ({influencers.length})
             </TabsTrigger>
-            <TabsTrigger value="communities" className="gap-2">
-              <Users className="w-4 h-4" />
+            <TabsTrigger value="communities" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Users className="w-4 h-4 hidden sm:block" />
               Communities ({communities.length})
             </TabsTrigger>
-            <TabsTrigger value="streamers" className="gap-2">
-              <Tv className="w-4 h-4" />
+            <TabsTrigger value="streamers" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Tv className="w-4 h-4 hidden sm:block" />
               Streamers ({streamers.length})
             </TabsTrigger>
           </TabsList>
