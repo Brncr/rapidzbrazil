@@ -74,7 +74,7 @@ interface FunnelStep {
 const FUNNEL_STEPS: FunnelStep[] = [
     {
         key: "impressions",
-        label: "Impressões",
+        label: "Impressions",
         shortLabel: "Impr.",
         icon: <Eye className="w-4 h-4" />,
         color: "#818cf8",
@@ -82,7 +82,7 @@ const FUNNEL_STEPS: FunnelStep[] = [
     },
     {
         key: "clicks",
-        label: "Cliques",
+        label: "Clicks",
         shortLabel: "Clicks",
         icon: <MousePointerClick className="w-4 h-4" />,
         color: "#60a5fa",
@@ -120,8 +120,8 @@ const FUNNEL_STEPS: FunnelStep[] = [
     },
     {
         key: "first_deposit",
-        label: "1º Depósito",
-        shortLabel: "Depósito",
+        label: "1st Deposit",
+        shortLabel: "Deposit",
         icon: <Wallet className="w-4 h-4" />,
         color: "#fb923c",
         type: "number",
@@ -135,7 +135,7 @@ const FUNNEL_STEPS: FunnelStep[] = [
         icon: <CreditCard className="w-4 h-4" />,
         color: "#f472b6",
         type: "number",
-        benchmark: "20-40% depósito",
+        benchmark: "20-40% deposit",
         benchmarkCalc: (k) => k.first_deposit ? `${((Number(k.topup || 0) / Number(k.first_deposit)) * 100).toFixed(1)}%` : "—",
     },
     {
@@ -148,7 +148,7 @@ const FUNNEL_STEPS: FunnelStep[] = [
     },
     {
         key: "recurrence_pct",
-        label: "Recorrência",
+        label: "Recurrence",
         shortLabel: "Recorr.",
         icon: <RefreshCw className="w-4 h-4" />,
         color: "#fbbf24",
@@ -160,7 +160,7 @@ const FUNNEL_STEPS: FunnelStep[] = [
 const PERFORMANCE_FIELDS: FunnelStep[] = [
     {
         key: "cac_per_active_user",
-        label: "CAC / Usuário Ativo",
+        label: "CAC / Active User",
         shortLabel: "CAC",
         icon: <Target className="w-4 h-4" />,
         color: "#f87171",
@@ -168,7 +168,7 @@ const PERFORMANCE_FIELDS: FunnelStep[] = [
     },
     {
         key: "retention_30d_pct",
-        label: "Retenção 30 dias",
+        label: "30-Day Retention",
         shortLabel: "Ret. 30d",
         icon: <TrendingUp className="w-4 h-4" />,
         color: "#34d399",
@@ -311,7 +311,7 @@ const CreatorKPIPage: React.FC = () => {
             setEditMode(false);
         } catch (error) {
             console.error("Error saving KPIs:", error);
-            toast.error("Erro ao salvar KPIs");
+            toast.error("Error saving KPIs");
         } finally {
             setSaving(false);
         }
@@ -320,7 +320,7 @@ const CreatorKPIPage: React.FC = () => {
     const handlePrint = () => window.print();
 
     const handleExportCSV = () => {
-        const headers = ["Período", ...FUNNEL_STEPS.map((s) => s.label), ...PERFORMANCE_FIELDS.map((f) => f.label), "Notas"];
+        const headers = ["Period", ...FUNNEL_STEPS.map((s) => s.label), ...PERFORMANCE_FIELDS.map((f) => f.label), "Notes"];
         const row = [
             kpi.period || "",
             ...FUNNEL_STEPS.map((s) => kpi[s.key] ?? ""),
@@ -373,10 +373,10 @@ const CreatorKPIPage: React.FC = () => {
                     conversions: 0,
                 });
                 setShowAddPost(false);
-                toast.success("Post adicionado!");
+                toast.success("Post added!");
             }
         } catch (err) {
-            toast.error("Erro ao adicionar post");
+            toast.error("Error adding post");
         }
     };
 
@@ -384,9 +384,9 @@ const CreatorKPIPage: React.FC = () => {
         try {
             await deleteCreatorPost(postId);
             setPosts((prev) => prev.filter((p) => p.id !== postId));
-            toast.success("Post removido");
+            toast.success("Post removed");
         } catch (err) {
-            toast.error("Erro ao remover post");
+            toast.error("Error removing post");
         }
     };
 
@@ -497,11 +497,11 @@ const CreatorKPIPage: React.FC = () => {
     const getConversionData = () => {
         const steps: { from: string; to: string; rate: number; color: string }[] = [];
         const pairs: [keyof CreatorKPI, keyof CreatorKPI, string, string][] = [
-            ["impressions", "clicks", "Impressões → Cliques", "#60a5fa"],
-            ["clicks", "telegram_members", "Cliques → Telegram", "#22d3ee"],
+            ["impressions", "clicks", "Impressions → Clicks", "#60a5fa"],
+            ["clicks", "telegram_members", "Clicks → Telegram", "#22d3ee"],
             ["downloads", "kyc_completed", "Downloads → KYC", "#a78bfa"],
-            ["kyc_completed", "first_deposit", "KYC → Depósito", "#fb923c"],
-            ["first_deposit", "topup", "Depósito → Top-up", "#f472b6"],
+            ["kyc_completed", "first_deposit", "KYC → Deposit", "#fb923c"],
+            ["first_deposit", "topup", "Deposit → Top-up", "#f472b6"],
         ];
         for (const [fromKey, toKey, label, color] of pairs) {
             const from = Number(kpi[fromKey] || 0);
@@ -569,7 +569,7 @@ const CreatorKPIPage: React.FC = () => {
                                 {editMode ? (
                                     <Button size="sm" className="gap-2" onClick={handleSave} disabled={saving}>
                                         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <BarChart3 className="w-4 h-4" />}
-                                        Salvar
+                                        Save
                                     </Button>
                                 ) : (
                                     <Button size="sm" variant="secondary" className="gap-2" onClick={() => setEditMode(true)}>
@@ -591,7 +591,7 @@ const CreatorKPIPage: React.FC = () => {
 
                     {/* ===== PERIOD ===== */}
                     <div className="flex items-center gap-3 text-sm">
-                        <span className="text-muted-foreground">📅 Período:</span>
+                        <span className="text-muted-foreground">📅 Period:</span>
                         {editMode ? (
                             <Input type="month" value={kpi.period || ""} onChange={(e) => handleChange("period", e.target.value)} className="w-44 h-8 text-sm" />
                         ) : (
@@ -604,9 +604,9 @@ const CreatorKPIPage: React.FC = () => {
                     {/* ===== NORTH STAR ===== */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {[
-                            { label: "Volume Mensal", value: kpi.volume_usd, type: "currency" as const, color: "#4ade80", icon: <DollarSign className="w-5 h-5" /> },
-                            { label: "Recorrência", value: kpi.recurrence_pct, type: "percent" as const, color: "#fbbf24", icon: <RefreshCw className="w-5 h-5" /> },
-                            { label: "Score Geral", value: kpi.score, type: "number" as const, color: "#f59e0b", icon: <Star className="w-5 h-5" /> },
+                            { label: "Monthly Volume", value: kpi.volume_usd, type: "currency" as const, color: "#4ade80", icon: <DollarSign className="w-5 h-5" /> },
+                            { label: "Recurrence", value: kpi.recurrence_pct, type: "percent" as const, color: "#fbbf24", icon: <RefreshCw className="w-5 h-5" /> },
+                            { label: "Overall Score", value: kpi.score, type: "number" as const, color: "#f59e0b", icon: <Star className="w-5 h-5" /> },
                         ].map((ns) => (
                             <Card key={ns.label} className="bg-gradient-to-br from-card to-background border-border/50">
                                 <CardContent className="p-5">
@@ -616,14 +616,14 @@ const CreatorKPIPage: React.FC = () => {
                                         </div>
                                         <span className="text-sm font-medium text-muted-foreground">{ns.label}</span>
                                     </div>
-                                    {editMode && ns.label !== "Score Geral" ? (
+                                    {editMode && ns.label !== "Overall Score" ? (
                                         <Input
                                             type="number" step={ns.type === "percent" ? "0.01" : "0.01"}
-                                            value={getVal(kpi, ns.label === "Volume Mensal" ? "volume_usd" : "recurrence_pct")}
-                                            onChange={(e) => handleChange(ns.label === "Volume Mensal" ? "volume_usd" : "recurrence_pct", e.target.value)}
+                                            value={getVal(kpi, ns.label === "Monthly Volume" ? "volume_usd" : "recurrence_pct")}
+                                            onChange={(e) => handleChange(ns.label === "Monthly Volume" ? "volume_usd" : "recurrence_pct", e.target.value)}
                                             className="text-2xl font-bold h-12"
                                         />
-                                    ) : editMode && ns.label === "Score Geral" ? (
+                                    ) : editMode && ns.label === "Overall Score" ? (
                                         <Input type="number" min="1" max="10" value={getVal(kpi, "score")} onChange={(e) => handleChange("score", e.target.value)} className="text-2xl font-bold h-12" />
                                     ) : (
                                         <p className="text-3xl font-bold" style={{ color: ns.color }}>
@@ -640,7 +640,7 @@ const CreatorKPIPage: React.FC = () => {
                         <CardContent className="p-5">
                             <h3 className="text-sm font-semibold mb-5 flex items-center gap-2">
                                 <BarChart3 className="w-4 h-4 text-primary" />
-                                🔻 Funil de Conversão
+                                🔻 Conversion Funnel
                             </h3>
 
                             {/* Funnel steps */}
@@ -757,7 +757,7 @@ const CreatorKPIPage: React.FC = () => {
                             <CardContent className="p-5">
                                 <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
                                     <Target className="w-4 h-4 text-primary" />
-                                    Taxas de Conversão
+                                    Conversion Rates
                                 </h3>
                                 <div className="space-y-3 mb-6">
                                     {getConversionData().length > 0 ? (
@@ -779,7 +779,7 @@ const CreatorKPIPage: React.FC = () => {
                                         ))
                                     ) : (
                                         <p className="text-xs text-muted-foreground/50 text-center py-4">
-                                            Preencha os dados do funil para ver as taxas de conversão
+                                            Fill in funnel data to see conversion rates
                                         </p>
                                     )}
                                 </div>
@@ -828,18 +828,18 @@ const CreatorKPIPage: React.FC = () => {
                                 <div className="p-1.5 rounded-lg bg-muted">
                                     <MessageSquare className="w-4 h-4 text-muted-foreground" />
                                 </div>
-                                <h3 className="text-sm font-semibold">Notas & Observações</h3>
+                                <h3 className="text-sm font-semibold">Notes & Observations</h3>
                             </div>
                             {editMode ? (
                                 <textarea
                                     value={kpi.notes || ""}
                                     onChange={(e) => handleChange("notes", e.target.value)}
                                     className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                    placeholder="Observações sobre o creator, estratégia, próximos passos..."
+                                    placeholder="Notes about the creator, strategy, next steps..."
                                 />
                             ) : (
                                 <p className="text-sm whitespace-pre-wrap text-foreground/80">
-                                    {kpi.notes || "Nenhuma nota adicionada."}
+                                    {kpi.notes || "No notes added."}
                                 </p>
                             )}
                         </CardContent>
@@ -850,7 +850,7 @@ const CreatorKPIPage: React.FC = () => {
                         <Card className="border-cyan-500/20 bg-gradient-to-br from-cyan-500/5 to-transparent">
                             <CardContent className="p-5">
                                 <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                                    📱 Telegram — Engajamento
+                                    📱 Telegram — Engagement
                                 </h3>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                     <div>
@@ -858,7 +858,7 @@ const CreatorKPIPage: React.FC = () => {
                                         <p className="text-xl font-bold text-cyan-400">{formatValue(kpi.telegram_members as number, "number")}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-muted-foreground">Engajamento</p>
+                                        <p className="text-xs text-muted-foreground">Engagement</p>
                                         {editMode ? (
                                             <Input type="number" step="0.01" value={getVal(kpi, "telegram_engagement_pct")} onChange={(e) => handleChange("telegram_engagement_pct", e.target.value)} className="h-8 text-sm" />
                                         ) : (
@@ -867,10 +867,10 @@ const CreatorKPIPage: React.FC = () => {
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">Benchmark</p>
-                                        <p className="text-sm text-muted-foreground/70">15-30% ativo</p>
+                                        <p className="text-sm text-muted-foreground/70">15-30% active</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-muted-foreground">Retenção 30d</p>
+                                        <p className="text-xs text-muted-foreground">30d Retention</p>
                                         <p className="text-sm text-muted-foreground/70">Meta: &gt;50%</p>
                                     </div>
                                 </div>
@@ -878,17 +878,17 @@ const CreatorKPIPage: React.FC = () => {
                         </Card>
                     )}
 
-                    {/* ===== POSTS & AÇÕES ===== */}
+                    {/* ===== POSTS & ACTIONS ===== */}
                     <Card>
                         <CardContent className="p-5">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-sm font-semibold flex items-center gap-2">
                                     <Link2 className="w-4 h-4 text-primary" />
-                                    📝 Posts & Ações do Creator
+                                    📝 Creator Posts & Actions
                                 </h3>
                                 <Button size="sm" variant="outline" className="gap-2" onClick={() => setShowAddPost(!showAddPost)}>
                                     <Plus className="w-4 h-4" />
-                                    Adicionar Post
+                                    Add Post
                                 </Button>
                             </div>
 
@@ -918,16 +918,16 @@ const CreatorKPIPage: React.FC = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Descrição</label>
-                                        <Input placeholder="Ex: Thread sobre cartão Rapidz" value={newPost.description || ""} onChange={(e) => setNewPost((p) => ({ ...p, description: e.target.value }))} />
+                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Description</label>
+                                        <Input placeholder="Ex: Thread about Rapidz card" value={newPost.description || ""} onChange={(e) => setNewPost((p) => ({ ...p, description: e.target.value }))} />
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                                         {[
-                                            { key: "impressions", label: "Impressões", icon: "👁" },
-                                            { key: "views", label: "Visualizações", icon: "▶" },
-                                            { key: "clicks", label: "Cliques", icon: "🖱" },
-                                            { key: "engagement", label: "Engajamento", icon: "💬" },
-                                            { key: "conversions", label: "Conversões", icon: "🎯" },
+                                            { key: "impressions", label: "Impressions", icon: "👁" },
+                                            { key: "views", label: "Views", icon: "▶" },
+                                            { key: "clicks", label: "Clicks", icon: "🖱" },
+                                            { key: "engagement", label: "Engagement", icon: "💬" },
+                                            { key: "conversions", label: "Conversions", icon: "🎯" },
                                         ].map((m) => (
                                             <div key={m.key}>
                                                 <label className="text-[10px] text-muted-foreground font-medium mb-1 block">{m.icon} {m.label}</label>
@@ -941,10 +941,10 @@ const CreatorKPIPage: React.FC = () => {
                                         ))}
                                     </div>
                                     <div className="flex gap-2 justify-end">
-                                        <Button size="sm" variant="ghost" onClick={() => setShowAddPost(false)}>Cancelar</Button>
+                                        <Button size="sm" variant="ghost" onClick={() => setShowAddPost(false)}>Cancel</Button>
                                         <Button size="sm" className="gap-2" onClick={handleAddPost}>
                                             <Plus className="w-4 h-4" />
-                                            Salvar Post
+                                            Save Post
                                         </Button>
                                     </div>
                                 </div>
@@ -954,19 +954,19 @@ const CreatorKPIPage: React.FC = () => {
                             {posts.length === 0 ? (
                                 <div className="text-center py-8 text-muted-foreground/50">
                                     <Link2 className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                                    <p className="text-sm">Nenhum post registrado ainda.</p>
-                                    <p className="text-xs mt-1">Clique em "Adicionar Post" para começar a trackar.</p>
+                                    <p className="text-sm">No posts recorded yet.</p>
+                                    <p className="text-xs mt-1">Click "Add Post" to start tracking.</p>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
                                     {/* Quick stats */}
                                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                                         {[
-                                            { label: "Total Impressões", value: posts.reduce((s, p) => s + (p.impressions || 0), 0), color: "#818cf8" },
+                                            { label: "Total Impressions", value: posts.reduce((s, p) => s + (p.impressions || 0), 0), color: "#818cf8" },
                                             { label: "Total Views", value: posts.reduce((s, p) => s + (p.views || 0), 0), color: "#60a5fa" },
-                                            { label: "Total Cliques", value: posts.reduce((s, p) => s + (p.clicks || 0), 0), color: "#34d399" },
-                                            { label: "Total Engajam.", value: posts.reduce((s, p) => s + (p.engagement || 0), 0), color: "#fbbf24" },
-                                            { label: "Total Conversões", value: posts.reduce((s, p) => s + (p.conversions || 0), 0), color: "#f87171" },
+                                            { label: "Total Clicks", value: posts.reduce((s, p) => s + (p.clicks || 0), 0), color: "#34d399" },
+                                            { label: "Total Engagement", value: posts.reduce((s, p) => s + (p.engagement || 0), 0), color: "#fbbf24" },
+                                            { label: "Total Conversions", value: posts.reduce((s, p) => s + (p.conversions || 0), 0), color: "#f87171" },
                                         ].map((stat) => (
                                             <div key={stat.label} className="rounded-lg border border-border/30 p-2 text-center bg-card">
                                                 <p className="text-[9px] text-muted-foreground">{stat.label}</p>
@@ -982,18 +982,18 @@ const CreatorKPIPage: React.FC = () => {
                                             <CardContent className="p-4">
                                                 <h4 className="text-xs font-semibold mb-3 flex items-center gap-2 text-muted-foreground">
                                                     <BarChart3 className="w-3.5 h-3.5 text-primary" />
-                                                    Métricas por Post
+                                                    Metrics per Post
                                                 </h4>
                                                 <div className="h-[220px]">
                                                     <ResponsiveContainer width="100%" height="100%">
                                                         <BarChart
                                                             data={posts.map((p, i) => ({
                                                                 name: p.description?.slice(0, 15) || `Post ${i + 1}`,
-                                                                Impressões: p.impressions || 0,
+                                                                Impressions: p.impressions || 0,
                                                                 Views: p.views || 0,
-                                                                Cliques: p.clicks || 0,
-                                                                Engajamento: p.engagement || 0,
-                                                                Conversões: p.conversions || 0,
+                                                                Clicks: p.clicks || 0,
+                                                                Engagement: p.engagement || 0,
+                                                                Conversions: p.conversions || 0,
                                                             }))}
                                                             barSize={12}
                                                         >
@@ -1004,11 +1004,11 @@ const CreatorKPIPage: React.FC = () => {
                                                                 contentStyle={{ backgroundColor: "hsl(0 0% 10%)", border: "1px solid hsl(0 0% 20%)", borderRadius: "8px", fontSize: "11px" }}
                                                                 labelStyle={{ color: "hsl(0 0% 90%)" }}
                                                             />
-                                                            <Bar dataKey="Impressões" fill="#818cf8" radius={[3, 3, 0, 0]} />
+                                                            <Bar dataKey="Impressions" fill="#818cf8" radius={[3, 3, 0, 0]} />
                                                             <Bar dataKey="Views" fill="#60a5fa" radius={[3, 3, 0, 0]} />
-                                                            <Bar dataKey="Cliques" fill="#34d399" radius={[3, 3, 0, 0]} />
-                                                            <Bar dataKey="Engajamento" fill="#fbbf24" radius={[3, 3, 0, 0]} />
-                                                            <Bar dataKey="Conversões" fill="#f87171" radius={[3, 3, 0, 0]} />
+                                                            <Bar dataKey="Clicks" fill="#34d399" radius={[3, 3, 0, 0]} />
+                                                            <Bar dataKey="Engagement" fill="#fbbf24" radius={[3, 3, 0, 0]} />
+                                                            <Bar dataKey="Conversions" fill="#f87171" radius={[3, 3, 0, 0]} />
                                                         </BarChart>
                                                     </ResponsiveContainer>
                                                 </div>

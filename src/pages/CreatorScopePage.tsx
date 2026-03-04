@@ -180,7 +180,7 @@ const CreatorScopePage: React.FC = () => {
     const handleAddScope = async () => {
         const exists = scopes.find((s) => s.platform === newScopePlatform);
         if (exists) {
-            toast.error("Plataforma já adicionada nesse período");
+            toast.error("Platform already added for this period");
             return;
         }
         try {
@@ -197,10 +197,10 @@ const CreatorScopePage: React.FC = () => {
             if (created) {
                 setScopes((prev) => [...prev, created]);
                 setShowAddScope(false);
-                toast.success("Plataforma adicionada ao escopo!");
+                toast.success("Platform added to scope!");
             }
         } catch (err) {
-            toast.error("Erro ao adicionar escopo");
+            toast.error("Error adding scope");
         }
     };
 
@@ -210,10 +210,10 @@ const CreatorScopePage: React.FC = () => {
             if (updated) {
                 setScopes((prev) => prev.map((s) => (s.id === scope.id ? updated : s)));
                 setEditingScopeId(null);
-                toast.success("Escopo salvo!");
+                toast.success("Scope saved!");
             }
         } catch (err) {
-            toast.error("Erro ao salvar escopo");
+            toast.error("Error saving scope");
         }
     };
 
@@ -221,9 +221,9 @@ const CreatorScopePage: React.FC = () => {
         try {
             await deleteCreatorScope(scopeId);
             setScopes((prev) => prev.filter((s) => s.id !== scopeId));
-            toast.success("Escopo removido");
+            toast.success("Scope removed");
         } catch (err) {
-            toast.error("Erro ao remover escopo");
+            toast.error("Error removing scope");
         }
     };
 
@@ -247,10 +247,10 @@ const CreatorScopePage: React.FC = () => {
                 setTasks((prev) => [...prev, created]);
                 setNewTask({ title: "", platform: "twitter", priority: "medium", due_date: "", notes: "" });
                 setShowAddTask(false);
-                toast.success("Tarefa adicionada!");
+                toast.success("Task added!");
             }
         } catch (err) {
-            toast.error("Erro ao adicionar tarefa");
+            toast.error("Error adding task");
         }
     };
 
@@ -265,7 +265,7 @@ const CreatorScopePage: React.FC = () => {
                 setTasks((prev) => prev.map((t) => (t.id === task.id ? updated : t)));
             }
         } catch (err) {
-            toast.error("Erro ao atualizar tarefa");
+            toast.error("Error updating task");
         }
     };
 
@@ -274,9 +274,9 @@ const CreatorScopePage: React.FC = () => {
             await deleteCreatorTask(taskId);
             setTasks((prev) => prev.filter((t) => t.id !== taskId));
             if (selectedTask?.id === taskId) setSelectedTask(null);
-            toast.success("Tarefa removida");
+            toast.success("Task removed");
         } catch (err) {
-            toast.error("Erro ao remover tarefa");
+            toast.error("Error removing task");
         }
     };
 
@@ -323,10 +323,10 @@ const CreatorScopePage: React.FC = () => {
             if (updated) {
                 setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
                 setSelectedTask(updated);
-                toast.success("Tarefa atualizada!");
+                toast.success("Task updated!");
             }
         } catch {
-            toast.error("Erro ao atualizar tarefa");
+            toast.error("Error updating task");
         }
     };
 
@@ -343,7 +343,7 @@ const CreatorScopePage: React.FC = () => {
                 setNewComment("");
             }
         } catch {
-            toast.error("Erro ao adicionar comentário");
+            toast.error("Error adding comment");
         }
     };
 
@@ -352,7 +352,7 @@ const CreatorScopePage: React.FC = () => {
             await deleteTaskComment(commentId);
             setTaskComments((prev) => prev.filter((c) => c.id !== commentId));
         } catch {
-            toast.error("Erro ao remover comentário");
+            toast.error("Error removing comment");
         }
     };
 
@@ -400,7 +400,7 @@ const CreatorScopePage: React.FC = () => {
                         )}
                         <div>
                             <h1 className="text-lg font-bold flex items-center gap-2">
-                                📋 Escopo & Tarefas
+                                📋 Scope & Tasks
                             </h1>
                             <p className="text-xs text-muted-foreground">{entityName}</p>
                         </div>
@@ -454,10 +454,10 @@ const CreatorScopePage: React.FC = () => {
                     <div className="flex items-center justify-between mb-3">
                         <h2 className="text-sm font-semibold flex items-center gap-2">
                             <Target className="w-4 h-4 text-primary" />
-                            🎯 Escopo por Plataforma
+                            🎯 Scope by Platform
                         </h2>
                         <Button size="sm" variant="outline" className="gap-2" onClick={() => setShowAddScope(!showAddScope)}>
-                            <Plus className="w-4 h-4" /> Plataforma
+                            <Plus className="w-4 h-4" /> Platform
                         </Button>
                     </div>
 
@@ -474,9 +474,9 @@ const CreatorScopePage: React.FC = () => {
                                     ))}
                                 </select>
                                 <Button size="sm" onClick={handleAddScope} className="gap-2">
-                                    <Plus className="w-4 h-4" /> Adicionar
+                                    <Plus className="w-4 h-4" /> Add
                                 </Button>
-                                <Button size="sm" variant="ghost" onClick={() => setShowAddScope(false)}>Cancelar</Button>
+                                <Button size="sm" variant="ghost" onClick={() => setShowAddScope(false)}>Cancel</Button>
                             </CardContent>
                         </Card>
                     )}
@@ -485,8 +485,8 @@ const CreatorScopePage: React.FC = () => {
                         <Card>
                             <CardContent className="p-8 text-center text-muted-foreground/50">
                                 <Clipboard className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                                <p className="text-sm">Nenhuma plataforma no escopo.</p>
-                                <p className="text-xs mt-1">Clique em "Plataforma" para definir o escopo de trabalho.</p>
+                                <p className="text-sm">No platforms in scope.</p>
+                                <p className="text-xs mt-1">Click "Platform" to define the work scope.</p>
                             </CardContent>
                         </Card>
                     ) : (
@@ -642,10 +642,10 @@ const CreatorScopePage: React.FC = () => {
                     <div className="flex items-center justify-between mb-3">
                         <h2 className="text-sm font-semibold flex items-center gap-2">
                             <ListChecks className="w-4 h-4 text-primary" />
-                            ✅ Board de Tarefas
+                            ✅ Task Board
                         </h2>
                         <Button size="sm" variant="outline" className="gap-2" onClick={() => setShowAddTask(!showAddTask)}>
-                            <Plus className="w-4 h-4" /> Nova Tarefa
+                            <Plus className="w-4 h-4" /> New Task
                         </Button>
                     </div>
 
@@ -655,11 +655,11 @@ const CreatorScopePage: React.FC = () => {
                             <CardContent className="p-4 space-y-3">
                                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                                     <div className="sm:col-span-2">
-                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Título da Tarefa</label>
+                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Task Title</label>
                                         <Input value={newTask.title || ""} onChange={(e) => setNewTask((p) => ({ ...p, title: e.target.value }))} placeholder="Ex: Thread sobre cartão Rapidz" className="h-9" />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Plataforma</label>
+                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Platform</label>
                                         <select
                                             value={newTask.platform || "twitter"}
                                             onChange={(e) => setNewTask((p) => ({ ...p, platform: e.target.value as PostPlatform }))}
@@ -690,9 +690,9 @@ const CreatorScopePage: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-2 justify-end">
-                                    <Button size="sm" variant="ghost" onClick={() => setShowAddTask(false)}>Cancelar</Button>
+                                    <Button size="sm" variant="ghost" onClick={() => setShowAddTask(false)}>Cancel</Button>
                                     <Button size="sm" className="gap-2" onClick={handleAddTask}>
-                                        <Plus className="w-4 h-4" /> Criar Tarefa
+                                        <Plus className="w-4 h-4" /> Create Task
                                     </Button>
                                 </div>
                             </CardContent>
@@ -704,8 +704,8 @@ const CreatorScopePage: React.FC = () => {
                         <Card>
                             <CardContent className="p-8 text-center text-muted-foreground/50">
                                 <ListChecks className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                                <p className="text-sm">Nenhuma tarefa criada.</p>
-                                <p className="text-xs mt-1">Clique em "Nova Tarefa" para começar o board.</p>
+                                <p className="text-sm">No tasks created.</p>
+                                <p className="text-xs mt-1">Click "New Task" to start the board.</p>
                             </CardContent>
                         </Card>
                     ) : (
@@ -740,7 +740,7 @@ const CreatorScopePage: React.FC = () => {
                                             ))}
                                             {columnTasks.length === 0 && (
                                                 <div className="border border-dashed border-border/30 rounded-lg p-6 text-center">
-                                                    <p className="text-[10px] text-muted-foreground/40">Arraste tarefas aqui</p>
+                                                    <p className="text-[10px] text-muted-foreground/40">Drag tasks here</p>
                                                 </div>
                                             )}
                                         </DroppableColumn>
@@ -772,7 +772,7 @@ const CreatorScopePage: React.FC = () => {
                             <div className="flex items-center justify-between p-4 border-b border-border">
                                 <div className="flex items-center gap-2">
                                     <span className="text-sm">{getPlatformInfo(selectedTask.platform).emoji}</span>
-                                    <h3 className="font-semibold text-sm">Detalhes da Tarefa</h3>
+                                    <h3 className="font-semibold text-sm">Task Details</h3>
                                 </div>
                                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSelectedTask(null)}>
                                     <X className="w-4 h-4" />
@@ -849,7 +849,7 @@ const CreatorScopePage: React.FC = () => {
 
                                 {/* Save button */}
                                 <Button size="sm" className="w-full gap-2" onClick={handleSaveTaskEdit}>
-                                    <Check className="w-4 h-4" /> Salvar Alterações
+                                    <Check className="w-4 h-4" /> Save Changes
                                 </Button>
 
                                 {/* Comments Section */}
@@ -916,7 +916,7 @@ const CreatorScopePage: React.FC = () => {
                                         className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 gap-2"
                                         onClick={() => { selectedTask.id && handleDeleteTask(selectedTask.id); }}
                                     >
-                                        <Trash2 className="w-3.5 h-3.5" /> Excluir Tarefa
+                                        <Trash2 className="w-3.5 h-3.5" /> Delete Task
                                     </Button>
                                 </div>
                             </div>
