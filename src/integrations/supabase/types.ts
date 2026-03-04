@@ -50,6 +50,97 @@ export type Database = {
         }
         Relationships: []
       }
+      creator_scopes: {
+        Row: {
+          id: string
+          entity_type: string
+          entity_id: string
+          period: string
+          platform: string
+          post_count: number
+          frequency: string
+          themes: string
+          formats: string
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          entity_type: string
+          entity_id: string
+          period?: string
+          platform: string
+          post_count?: number
+          frequency?: string
+          themes?: string
+          formats?: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          entity_type?: string
+          entity_id?: string
+          period?: string
+          platform?: string
+          post_count?: number
+          frequency?: string
+          themes?: string
+          formats?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      creator_tasks: {
+        Row: {
+          id: string
+          entity_type: string
+          entity_id: string
+          scope_id: string | null
+          title: string
+          platform: string
+          status: string
+          priority: string
+          due_date: string | null
+          completed_at: string | null
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          entity_type: string
+          entity_id: string
+          scope_id?: string | null
+          title: string
+          platform: string
+          status?: string
+          priority?: string
+          due_date?: string | null
+          completed_at?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          entity_type?: string
+          entity_id?: string
+          scope_id?: string | null
+          title?: string
+          platform?: string
+          status?: string
+          priority?: string
+          due_date?: string | null
+          completed_at?: string | null
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       creator_posts: {
         Row: {
           id: string

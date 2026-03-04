@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import CreatorKPIPage from "./pages/CreatorKPIPage";
+import CreatorScopePage from "./pages/CreatorScopePage";
 import NotFound from "./pages/NotFound";
 import { ThemeToggle } from "./components/ThemeToggle";
 
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/kpis/:entityType/:entityId" element={<CreatorKPIPage />} />
+            <Route path="/scope/:entityType/:entityId" element={<CreatorScopePage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

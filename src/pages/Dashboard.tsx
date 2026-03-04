@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Twitter, Users, Tv, Save, ExternalLink, Loader2, BarChart3 } from "lucide-react";
+import { ArrowLeft, Twitter, Users, Tv, Save, ExternalLink, Loader2, BarChart3, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -394,6 +394,16 @@ const Dashboard = () => {
                         📊 KPIs
                       </Button>
                     </Link>
+                    <Link to={`/scope/influencer/${inf.id}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 mt-1"
+                      >
+                        <ListChecks className="w-4 h-4" />
+                        📋 Escopo
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
@@ -502,6 +512,16 @@ const Dashboard = () => {
                       >
                         <BarChart3 className="w-4 h-4" />
                         📊 KPIs
+                      </Button>
+                    </Link>
+                    <Link to={`/scope/community/${comm.id}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 mt-1"
+                      >
+                        <ListChecks className="w-4 h-4" />
+                        📋 Escopo
                       </Button>
                     </Link>
                   </CardContent>
@@ -632,6 +652,16 @@ const Dashboard = () => {
                       >
                         <BarChart3 className="w-4 h-4" />
                         📊 KPIs
+                      </Button>
+                    </Link>
+                    <Link to={`/scope/streamer/${str.id}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 mt-1"
+                      >
+                        <ListChecks className="w-4 h-4" />
+                        📋 Escopo
                       </Button>
                     </Link>
                   </CardContent>

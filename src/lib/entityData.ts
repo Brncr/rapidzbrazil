@@ -359,3 +359,112 @@ export const deleteCreatorPost = async (postId: string): Promise<void> => {
     throw error;
   }
 };
+
+// ==================== CREATOR SCOPES ====================
+
+export type TaskStatus = 'pending' | 'in_progress' | 'done';
+export type TaskPriority = 'low' | 'medium' | 'high';
+
+export interface CreatorScope {
+  id?: string;
+  entity_type: EntityType;
+  entity_id: string;
+  period: string;
+  platform: PostPlatform;
+  post_count: number;
+  frequency: string;
+  themes: string;
+  formats: string;
+  notes?: string | null;
+}
+
+export interface CreatorTask {
+  id?: string;
+  entity_type: EntityType;
+  entity_id: string;
+  scope_id?: string | null;
+  title: string;
+  platform: PostPlatform;
+  status: TaskStatus;
+  priority: TaskPriority;
+  due_date?: string | null;
+  completed_at?: string | null;
+  notes?: string | null;
+}
+
+export const getCreatorScopes = async (entityType: EntityType, entityId: string, period?: string): Promise<CreatorScope[]> => {
+  let query = supabase
+    .from("creator_scopes")
+    .select("*")
+    .eq("entity_type", entityType)
+    .eq("entity_id", entityId);
+
+  if (period) query = query.eq("period", period);
+
+  const { data, error } = await query.order("platform", { ascending: true });
+  if (error) { console.error("Error fetching scopes:", error); throw error; }
+  return (data as unknown as CreatorScope[]) || [];
+};
+
+export const upsertCreatorScope = async (scope: CreatorScope): Promise<CreatorScope | null> => {
+  const { data, error } = await supabase
+    .from("creator_scopes")
+    .upsert(
+      { ...scope, updated_at: new Date().toISOString() },
+      { onConflict: "entity_type,entity_id,period,platform" }
+    )
+    .select()
+    .single();
+
+  if (error) { console.error("Error upserting scope:", error); throw error; }
+  return data as unknown as CreatorScope;
+};
+
+export const deleteCreatorScope = async (scopeId: string): Promise<void> => {
+  const { error } = await supabase.from("creator_scopes").delete().eq("id", scopeId);
+  if (error) { console.error("Error deleting scope:", error); throw error; }
+};
+
+// ==================== CREATOR TASKS ====================
+
+export const getCreatorTasks = async (entityType: EntityType, entityId: string): Promise<CreatorTask[]> => {
+  const { data, error } = await supabase
+    .from("creator_tasks")
+    .select("*")
+    .eq("entity_type", entityType)
+    .eq("entity_id", entityId)
+    .order("created_at", { ascending: true });
+
+  if (error) { console.error("Error fetching tasks:", error); throw error; }
+  return (data as unknown as CreatorTask[]) || [];
+};
+
+export const addCreatorTask = async (task: Omit<CreatorTask, 'id'>): Promise<CreatorTask | null> => {
+  const { data, error } = await supabase
+    .from("creator_tasks")
+    .insert([task])
+    .select()
+    .single();
+
+  if (error) { console.error("Error adding task:", error); throw error; }
+  return data as unknown as CreatorTask;
+};
+
+export const updateCreatorTask = async (task: CreatorTask): Promise<CreatorTask | null> => {
+  if (!task.id) throw new Error("Task ID required");
+  const { id, ...rest } = task;
+  const { data, error } = await supabase
+    .from("creator_tasks")
+    .update({ ...rest, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) { console.error("Error updating task:", error); throw error; }
+  return data as unknown as CreatorTask;
+};
+
+export const deleteCreatorTask = async (taskId: string): Promise<void> => {
+  const { error } = await supabase.from("creator_tasks").delete().eq("id", taskId);
+  if (error) { console.error("Error deleting task:", error); throw error; }
+};
