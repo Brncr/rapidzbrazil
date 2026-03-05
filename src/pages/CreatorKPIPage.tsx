@@ -573,7 +573,7 @@ const CreatorKPIPage: React.FC = () => {
                                     </Button>
                                 ) : (
                                     <Button size="sm" variant="secondary" className="gap-2" onClick={() => setEditMode(true)}>
-                                        ✏️ Editar
+                                        ✏️ Edit
                                     </Button>
                                 )}
                             </div>
@@ -897,7 +897,7 @@ const CreatorKPIPage: React.FC = () => {
                                 <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-4 mb-4 space-y-3">
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                         <div>
-                                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Plataforma</label>
+                                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Platform</label>
                                             <select
                                                 value={newPost.platform || "twitter"}
                                                 onChange={(e) => setNewPost((p) => ({ ...p, platform: e.target.value as PostPlatform }))}
@@ -1015,11 +1015,11 @@ const CreatorKPIPage: React.FC = () => {
                                                 {/* Legend */}
                                                 <div className="flex flex-wrap gap-3 mt-2 justify-center">
                                                     {[
-                                                        { label: "Impressões", color: "#818cf8" },
+                                                        { label: "Impressions", color: "#818cf8" },
                                                         { label: "Views", color: "#60a5fa" },
-                                                        { label: "Cliques", color: "#34d399" },
-                                                        { label: "Engajamento", color: "#fbbf24" },
-                                                        { label: "Conversões", color: "#f87171" },
+                                                        { label: "Clicks", color: "#34d399" },
+                                                        { label: "Engagement", color: "#fbbf24" },
+                                                        { label: "Conversions", color: "#f87171" },
                                                     ].map((l) => (
                                                         <div key={l.label} className="flex items-center gap-1">
                                                             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: l.color }} />
@@ -1035,7 +1035,7 @@ const CreatorKPIPage: React.FC = () => {
                                             <CardContent className="p-4">
                                                 <h4 className="text-xs font-semibold mb-3 flex items-center gap-2 text-muted-foreground">
                                                     <Target className="w-3.5 h-3.5 text-primary" />
-                                                    Performance por Plataforma
+                                                    Performance by Platform
                                                 </h4>
                                                 <div className="space-y-3">
                                                     {(() => {
@@ -1185,8 +1185,8 @@ const CreatorKPIPage: React.FC = () => {
                                                             <Input value={ep.post_url || ""} onChange={(e) => setEditingPost((p) => ({ ...p, post_url: e.target.value }))} className="h-8 text-xs" placeholder="https://..." />
                                                         </div>
                                                         <div>
-                                                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Descrição</label>
-                                                            <Input value={ep.description || ""} onChange={(e) => setEditingPost((p) => ({ ...p, description: e.target.value }))} className="h-8 text-xs" placeholder="Descrição do post..." />
+                                                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Description</label>
+                                                            <Input value={ep.description || ""} onChange={(e) => setEditingPost((p) => ({ ...p, description: e.target.value }))} className="h-8 text-xs" placeholder="Post description..." />
                                                         </div>
                                                     </div>
                                                 ) : (
@@ -1215,11 +1215,11 @@ const CreatorKPIPage: React.FC = () => {
                                                 {/* Metrics bar */}
                                                 <div className="border-t border-border/30 bg-card/50 px-3 sm:px-4 py-2.5 grid grid-cols-3 sm:grid-cols-5 gap-2 text-center">
                                                     {[
-                                                        { key: "impressions", label: "Impressões", icon: "👁" },
+                                                        { key: "impressions", label: "Impressions", icon: "👁" },
                                                         { key: "views", label: "Views", icon: "▶" },
-                                                        { key: "clicks", label: "Cliques", icon: "🖱" },
-                                                        { key: "engagement", label: "Engajam.", icon: "💬" },
-                                                        { key: "conversions", label: "Conversões", icon: "🎯" },
+                                                        { key: "clicks", label: "Clicks", icon: "🖱" },
+                                                        { key: "engagement", label: "Engage.", icon: "💬" },
+                                                        { key: "conversions", label: "Conversions", icon: "🎯" },
                                                     ].map((m) => (
                                                         <div key={m.key}>
                                                             <p className="text-[9px] text-muted-foreground">{m.icon} {m.label}</p>

@@ -75,25 +75,25 @@ const PLATFORMS: { key: PostPlatform; label: string; emoji: string; color: strin
 ];
 
 const STATUS_CONFIG: Record<TaskStatus, { label: string; emoji: string; color: string; bg: string }> = {
-    pending: { label: "A Fazer", emoji: "⏳", color: "#fbbf24", bg: "rgba(251,191,36,0.08)" },
-    in_progress: { label: "Em Andamento", emoji: "🔄", color: "#60a5fa", bg: "rgba(96,165,250,0.08)" },
-    done: { label: "Concluído", emoji: "✅", color: "#34d399", bg: "rgba(52,211,153,0.08)" },
+    pending: { label: "To Do", emoji: "⏳", color: "#fbbf24", bg: "rgba(251,191,36,0.08)" },
+    in_progress: { label: "In Progress", emoji: "🔄", color: "#60a5fa", bg: "rgba(96,165,250,0.08)" },
+    done: { label: "Done", emoji: "✅", color: "#34d399", bg: "rgba(52,211,153,0.08)" },
 };
 
 const PRIORITY_CONFIG: Record<TaskPriority, { label: string; emoji: string; color: string }> = {
-    low: { label: "Baixa", emoji: "🟢", color: "#34d399" },
-    medium: { label: "Média", emoji: "🟡", color: "#fbbf24" },
-    high: { label: "Alta", emoji: "🔴", color: "#f87171" },
+    low: { label: "Low", emoji: "🟢", color: "#34d399" },
+    medium: { label: "Medium", emoji: "🟡", color: "#fbbf24" },
+    high: { label: "High", emoji: "🔴", color: "#f87171" },
 };
 
-const FREQUENCY_OPTIONS = ["Diário", "2x/semana", "3x/semana", "Semanal", "Quinzenal", "Mensal"];
+const FREQUENCY_OPTIONS = ["Daily", "2x/week", "3x/week", "Weekly", "Biweekly", "Monthly"];
 const FORMAT_OPTIONS: Record<string, string[]> = {
     twitter: ["Thread", "Tweet", "Poll", "Space"],
-    telegram: ["Post", "Enquete", "Tutorial", "Alerta"],
-    youtube: ["Vídeo", "Short", "Live", "Review"],
+    telegram: ["Post", "Poll", "Tutorial", "Alert"],
+    youtube: ["Video", "Short", "Live", "Review"],
     instagram: ["Post", "Reels", "Stories", "Carousel"],
-    tiktok: ["Vídeo", "Trend", "Tutorial", "Live"],
-    other: ["Post", "Artigo", "Newsletter"],
+    tiktok: ["Video", "Trend", "Tutorial", "Live"],
+    other: ["Post", "Article", "Newsletter"],
 };
 
 // ==================== COMPONENT ====================
@@ -229,7 +229,7 @@ const CreatorScopePage: React.FC = () => {
 
     const handleAddTask = async () => {
         if (!newTask.title) {
-            toast.error("Título obrigatório");
+            toast.error("Title is required");
             return;
         }
         try {
@@ -435,10 +435,10 @@ const CreatorScopePage: React.FC = () => {
                                 </div>
                             </div>
                             {[
-                                { label: "Posts Planejados", value: totalPlannedPosts, color: "#818cf8", icon: "📝" },
-                                { label: "A Fazer", value: pendingTasks, color: "#fbbf24", icon: "⏳" },
-                                { label: "Em Andamento", value: inProgressTasks, color: "#60a5fa", icon: "🔄" },
-                                { label: "Concluídas", value: doneTasks, color: "#34d399", icon: "✅" },
+                                { label: "Planned Posts", value: totalPlannedPosts, color: "#818cf8", icon: "📝" },
+                                { label: "To Do", value: pendingTasks, color: "#fbbf24", icon: "⏳" },
+                                { label: "In Progress", value: inProgressTasks, color: "#60a5fa", icon: "🔄" },
+                                { label: "Done", value: doneTasks, color: "#34d399", icon: "✅" },
                             ].map((stat) => (
                                 <div key={stat.label} className="text-center">
                                     <p className="text-[10px] text-muted-foreground">{stat.icon} {stat.label}</p>
@@ -550,7 +550,7 @@ const CreatorScopePage: React.FC = () => {
                                                             <Input type="number" value={sc.post_count || 0} onChange={(e) => setEditingScope((p) => ({ ...p, post_count: Number(e.target.value) }))} className="h-8 text-sm" />
                                                         </div>
                                                         <div>
-                                                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">📅 Frequência</label>
+                                                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">📅 Frequency</label>
                                                             <select
                                                                 value={sc.frequency || ""}
                                                                 onChange={(e) => setEditingScope((p) => ({ ...p, frequency: e.target.value }))}
@@ -584,12 +584,12 @@ const CreatorScopePage: React.FC = () => {
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">💡 Temas</label>
-                                                        <Input value={sc.themes || ""} onChange={(e) => setEditingScope((p) => ({ ...p, themes: e.target.value }))} className="h-8 text-xs" placeholder="Ex: cartão crypto, staking, tutorial" />
+                                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">💡 Themes</label>
+                                                        <Input value={sc.themes || ""} onChange={(e) => setEditingScope((p) => ({ ...p, themes: e.target.value }))} className="h-8 text-xs" placeholder="Ex: crypto card, staking, tutorial" />
                                                     </div>
                                                     <div>
-                                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">📝 Notas</label>
-                                                        <Input value={sc.notes || ""} onChange={(e) => setEditingScope((p) => ({ ...p, notes: e.target.value }))} className="h-8 text-xs" placeholder="Observações..." />
+                                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">📝 Notes</label>
+                                                        <Input value={sc.notes || ""} onChange={(e) => setEditingScope((p) => ({ ...p, notes: e.target.value }))} className="h-8 text-xs" placeholder="Notes..." />
                                                     </div>
                                                 </>
                                             ) : (
@@ -600,7 +600,7 @@ const CreatorScopePage: React.FC = () => {
                                                             <p className="text-lg font-bold" style={{ color: info.color }}>{scope.post_count || 0}</p>
                                                         </div>
                                                         <div>
-                                                            <p className="text-[9px] text-muted-foreground">📅 Frequência</p>
+                                                            <p className="text-[9px] text-muted-foreground">📅 Frequency</p>
                                                             <p className="text-xs font-medium">{scope.frequency || "—"}</p>
                                                         </div>
                                                     </div>
@@ -616,7 +616,7 @@ const CreatorScopePage: React.FC = () => {
                                                     )}
                                                     {scope.themes && (
                                                         <div>
-                                                            <p className="text-[9px] text-muted-foreground mb-1">💡 Temas</p>
+                                                            <p className="text-[9px] text-muted-foreground mb-1">💡 Themes</p>
                                                             <div className="flex flex-wrap gap-1">
                                                                 {scope.themes.split(",").map((t) => t.trim()).filter(Boolean).map((theme) => (
                                                                     <span key={theme} className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary/80">{theme}</span>
@@ -656,7 +656,7 @@ const CreatorScopePage: React.FC = () => {
                                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                                     <div className="sm:col-span-2">
                                         <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Task Title</label>
-                                        <Input value={newTask.title || ""} onChange={(e) => setNewTask((p) => ({ ...p, title: e.target.value }))} placeholder="Ex: Thread sobre cartão Rapidz" className="h-9" />
+                                        <Input value={newTask.title || ""} onChange={(e) => setNewTask((p) => ({ ...p, title: e.target.value }))} placeholder="Ex: Thread about Rapidz card" className="h-9" />
                                     </div>
                                     <div>
                                         <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Platform</label>
@@ -686,7 +686,7 @@ const CreatorScopePage: React.FC = () => {
                                     </div>
                                     <div>
                                         <label className="text-[10px] text-muted-foreground font-medium mb-1 block">📝 Notas</label>
-                                        <Input value={newTask.notes || ""} onChange={(e) => setNewTask((p) => ({ ...p, notes: e.target.value }))} placeholder="Detalhes..." className="h-9" />
+                                        <Input value={newTask.notes || ""} onChange={(e) => setNewTask((p) => ({ ...p, notes: e.target.value }))} placeholder="Details..." className="h-9" />
                                     </div>
                                 </div>
                                 <div className="flex gap-2 justify-end">
@@ -731,9 +731,9 @@ const CreatorScopePage: React.FC = () => {
                                                     onDelete={() => task.id && handleDeleteTask(task.id)}
                                                     onMoveNext={() => handleUpdateTaskStatus(task, cycleStatus(task.status as TaskStatus))}
                                                     nextStatusLabel={
-                                                        cycleStatus(task.status as TaskStatus) === "in_progress" ? "▶ Iniciar"
-                                                            : cycleStatus(task.status as TaskStatus) === "done" ? "✓ Concluir"
-                                                                : "↩ Voltar"
+                                                        cycleStatus(task.status as TaskStatus) === "in_progress" ? "▶ Start"
+                                                            : cycleStatus(task.status as TaskStatus) === "done" ? "✓ Complete"
+                                                                : "↩ Back"
                                                     }
                                                     nextStatusConfig={STATUS_CONFIG[cycleStatus(task.status as TaskStatus)]}
                                                 />
@@ -783,7 +783,7 @@ const CreatorScopePage: React.FC = () => {
                             <div className="p-4 space-y-4">
                                 {/* Title */}
                                 <div>
-                                    <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Título</label>
+                                    <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Title</label>
                                     <Input
                                         value={editingTask.title || ""}
                                         onChange={(e) => setEditingTask((p) => ({ ...p, title: e.target.value }))}
@@ -794,7 +794,7 @@ const CreatorScopePage: React.FC = () => {
                                 {/* Platform, Priority, Status row */}
                                 <div className="grid grid-cols-3 gap-3">
                                     <div>
-                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Plataforma</label>
+                                        <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Platform</label>
                                         <select
                                             value={editingTask.platform || "twitter"}
                                             onChange={(e) => setEditingTask((p) => ({ ...p, platform: e.target.value as PostPlatform }))}
@@ -841,7 +841,7 @@ const CreatorScopePage: React.FC = () => {
                                         <Input
                                             value={editingTask.notes || ""}
                                             onChange={(e) => setEditingTask((p) => ({ ...p, notes: e.target.value }))}
-                                            placeholder="Detalhes..."
+                                            placeholder="Details..."
                                             className="h-9 text-sm"
                                         />
                                     </div>
@@ -856,7 +856,7 @@ const CreatorScopePage: React.FC = () => {
                                 <div className="border-t border-border pt-4">
                                     <h4 className="text-xs font-semibold flex items-center gap-2 mb-3">
                                         <MessageSquare className="w-3.5 h-3.5 text-primary" />
-                                        Comentários ({taskComments.length})
+                                        Comments ({taskComments.length})
                                     </h4>
 
                                     {loadingComments ? (
@@ -866,7 +866,7 @@ const CreatorScopePage: React.FC = () => {
                                     ) : (
                                         <div className="space-y-2 max-h-48 overflow-y-auto mb-3">
                                             {taskComments.length === 0 && (
-                                                <p className="text-[10px] text-muted-foreground/50 text-center py-2">Sem comentários ainda</p>
+                                                <p className="text-[10px] text-muted-foreground/50 text-center py-2">No comments yet</p>
                                             )}
                                             {taskComments.map((comment) => (
                                                 <div key={comment.id} className="group flex gap-2 p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
@@ -900,7 +900,7 @@ const CreatorScopePage: React.FC = () => {
                                             value={newComment}
                                             onChange={(e) => setNewComment(e.target.value)}
                                             onKeyDown={(e) => e.key === "Enter" && handleAddComment()}
-                                            placeholder="Escreva um comentário..."
+                                            placeholder="Write a comment..."
                                             className="h-8 text-xs flex-1"
                                         />
                                         <Button size="sm" className="h-8 px-3" onClick={handleAddComment} disabled={!newComment.trim()}>
