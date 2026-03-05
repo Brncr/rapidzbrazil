@@ -174,9 +174,9 @@ const SlideGiveaway: React.FC = () => (
             <p className="text-xs text-white/40 uppercase tracking-wider mb-4">Giveaway Rules</p>
             <div className="space-y-3">
                 {[
-                    { step: "1", text: "Follow @tether_gold" },
-                    { step: "2", text: "Follow @rapidz" },
-                    { step: "3", text: "Follow @beaboratcrypto" },
+                    { step: "1", text: "Follow @tether" },
+                    { step: "2", text: "Follow @Rapidz_io" },
+                    { step: "3", text: "Follow @beincrypto" },
                     { step: "4", text: "RT + Tag 3 friends" },
                 ].map((r) => (
                     <div key={r.step} className="flex items-center gap-4">
