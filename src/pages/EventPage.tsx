@@ -84,9 +84,11 @@ const EventPage: React.FC = () => {
     const [allInfluencers, setAllInfluencers] = useState<Influencer[]>([]);
     const [showAddInfluencer, setShowAddInfluencer] = useState(false);
 
-    // Add expense
+    // Add / edit expense
     const [showAddExpense, setShowAddExpense] = useState(false);
     const [newExpense, setNewExpense] = useState<Partial<EventExpense>>({ category: "house", amount: 0, per_day: false, description: "" });
+    const [editingExpenseId, setEditingExpenseId] = useState<string | null>(null);
+    const [editExpense, setEditExpense] = useState<Partial<EventExpense>>({});
 
     // Add activity
     const [showAddActivity, setShowAddActivity] = useState(false);
@@ -241,6 +243,31 @@ const EventPage: React.FC = () => {
         } catch {
             toast.error("Failed to remove expense");
         }
+    };
+
+    const handleStartEditExpense = (exp: EventExpense) => {
+        setEditingExpenseId(exp.id || null);
+        setEditExpense({ ...exp });
+    };
+
+    const handleSaveExpense = async () => {
+        if (!editingExpenseId || !editExpense) return;
+        try {
+            const updated = await updateEventExpense(editExpense as EventExpense);
+            if (updated) {
+                setExpenses((prev) => prev.map((e) => (e.id === editingExpenseId ? updated : e)));
+                toast.success("Expense updated!");
+            }
+        } catch {
+            toast.error("Failed to update expense");
+        }
+        setEditingExpenseId(null);
+        setEditExpense({});
+    };
+
+    const handleCancelEditExpense = () => {
+        setEditingExpenseId(null);
+        setEditExpense({});
     };
 
     const handleAddActivity = async () => {
@@ -615,23 +642,69 @@ const EventPage: React.FC = () => {
                                                 <td></td>
                                             </tr>
                                             {/* Expense rows */}
-                                            {catExpenses.map((exp) => (
-                                                <tr key={exp.id} className="border-b border-border/5 group hover:bg-card/30">
-                                                    <td className="p-2 pl-6 text-muted-foreground">{exp.description || cat.label}</td>
-                                                    <td className="p-2 text-center font-mono">{fmt(exp.amount)}</td>
-                                                    <td className="p-2 text-center text-muted-foreground/60">
-                                                        {exp.per_day ? `×${days}d` : "fixed"}
-                                                    </td>
-                                                    <td className="p-2 text-right font-medium">
-                                                        {fmt(exp.per_day ? exp.amount * days : exp.amount)}
-                                                    </td>
-                                                    <td className="p-1">
-                                                        <Button variant="ghost" size="icon" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => exp.id && handleDeleteExpense(exp.id)}>
-                                                            <Trash2 className="w-3 h-3 text-destructive" />
-                                                        </Button>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                            {catExpenses.map((exp) => {
+                                                const isEditing = editingExpenseId === exp.id;
+                                                return isEditing ? (
+                                                    <tr key={exp.id} className="border-b border-primary/20 bg-primary/5">
+                                                        <td className="p-1.5 pl-6">
+                                                            <Input
+                                                                value={editExpense.description || ""}
+                                                                onChange={(e) => setEditExpense((p) => ({ ...p, description: e.target.value }))}
+                                                                className="h-7 text-xs"
+                                                                placeholder="Description..."
+                                                                autoFocus
+                                                            />
+                                                        </td>
+                                                        <td className="p-1.5">
+                                                            <Input
+                                                                type="number"
+                                                                value={editExpense.amount ?? 0}
+                                                                onChange={(e) => setEditExpense((p) => ({ ...p, amount: Number(e.target.value) }))}
+                                                                className="h-7 text-xs text-center w-20 mx-auto"
+                                                                step="0.01"
+                                                            />
+                                                        </td>
+                                                        <td className="p-1.5 text-center">
+                                                            <label className="flex items-center justify-center gap-1 cursor-pointer">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={editExpense.per_day || false}
+                                                                    onChange={(e) => setEditExpense((p) => ({ ...p, per_day: e.target.checked }))}
+                                                                    className="rounded w-3 h-3"
+                                                                />
+                                                                <span className="text-[10px] text-muted-foreground">×{days}d</span>
+                                                            </label>
+                                                        </td>
+                                                        <td className="p-1.5 text-right font-medium text-xs">
+                                                            {fmt((editExpense.per_day ? (editExpense.amount || 0) * days : (editExpense.amount || 0)))}
+                                                        </td>
+                                                        <td className="p-1 whitespace-nowrap">
+                                                            <Button variant="ghost" size="icon" className="h-5 w-5 text-green-400" onClick={handleSaveExpense}>
+                                                                <Check className="w-3 h-3" />
+                                                            </Button>
+                                                            <Button variant="ghost" size="icon" className="h-5 w-5 text-muted-foreground" onClick={handleCancelEditExpense}>
+                                                                <X className="w-3 h-3" />
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                ) : (
+                                                    <tr key={exp.id} className="border-b border-border/5 group hover:bg-card/30 cursor-pointer" onClick={() => handleStartEditExpense(exp)}>
+                                                        <td className="p-2 pl-6 text-muted-foreground">{exp.description || cat.label}</td>
+                                                        <td className="p-2 text-center font-mono">{fmt(exp.amount)}</td>
+                                                        <td className="p-2 text-center text-muted-foreground/60">
+                                                            {exp.per_day ? `×${days}d` : "fixed"}
+                                                        </td>
+                                                        <td className="p-2 text-right font-medium">
+                                                            {fmt(exp.per_day ? exp.amount * days : exp.amount)}
+                                                        </td>
+                                                        <td className="p-1">
+                                                            <Button variant="ghost" size="icon" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); exp.id && handleDeleteExpense(exp.id); }}>
+                                                                <Trash2 className="w-3 h-3 text-destructive" />
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
                                         </React.Fragment>
                                     );
                                 })}
