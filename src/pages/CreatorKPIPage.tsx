@@ -432,11 +432,13 @@ const CreatorKPIPage: React.FC = () => {
             const tweetMatch = url.match(/status\/(\d+)/);
             if (tweetMatch) {
                 return (
-                    <iframe
-                        src={`https://platform.twitter.com/embed/Tweet.html?id=${tweetMatch[1]}&theme=dark`}
-                        className="w-full h-[300px] rounded-lg border-0"
-                        allowFullScreen
-                    />
+                    <div className="bg-[#15202b] rounded-lg overflow-hidden max-w-[550px]">
+                        <iframe
+                            src={`https://platform.twitter.com/embed/Tweet.html?id=${tweetMatch[1]}&theme=dark&dnt=true`}
+                            className="w-full h-[300px] border-0"
+                            allowFullScreen
+                        />
+                    </div>
                 );
             }
         }

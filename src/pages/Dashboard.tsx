@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Twitter, Users, Tv, Save, ExternalLink, Loader2, BarChart3, ListChecks } from "lucide-react";
+import { ArrowLeft, Twitter, Users, Tv, Save, ExternalLink, Loader2, BarChart3, ListChecks, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -29,6 +29,7 @@ const Dashboard = () => {
   const [communities, setCommunities] = useState<Community[]>([]);
   const [streamers, setStreamers] = useState<Streamer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [presentationMode, setPresentationMode] = useState(true);
   const [saving, setSaving] = useState(false);
 
   // Track changes
@@ -252,6 +253,15 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              variant={presentationMode ? "default" : "outline"}
+              size="sm"
+              className={`gap-2 ${presentationMode ? 'bg-yellow-600 hover:bg-yellow-700 text-white' : ''}`}
+              onClick={() => setPresentationMode(!presentationMode)}
+            >
+              {presentationMode ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {presentationMode ? "Showing Selected" : "Show All"}
+            </Button>
             <Link to="/evento">
               <Button variant="outline" size="sm" className="gap-2">
                 🎪 Event Merge 2026
@@ -269,15 +279,15 @@ const Dashboard = () => {
           <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6">
             <TabsTrigger value="influencers" className="gap-1 sm:gap-2 text-xs sm:text-sm">
               <Twitter className="w-4 h-4 hidden sm:block" />
-              Influencers ({influencers.length})
+              Influencers ({presentationMode ? influencers.filter(i => i.visible !== false).length : influencers.length})
             </TabsTrigger>
             <TabsTrigger value="communities" className="gap-1 sm:gap-2 text-xs sm:text-sm">
               <Users className="w-4 h-4 hidden sm:block" />
-              Communities ({communities.length})
+              Communities ({presentationMode ? communities.filter(c => c.visible !== false).length : communities.length})
             </TabsTrigger>
             <TabsTrigger value="streamers" className="gap-1 sm:gap-2 text-xs sm:text-sm">
               <Tv className="w-4 h-4 hidden sm:block" />
-              Streamers ({streamers.length})
+              Streamers ({presentationMode ? streamers.filter(s => s.visible !== false).length : streamers.length})
             </TabsTrigger>
           </TabsList>
 
@@ -290,7 +300,7 @@ const Dashboard = () => {
               </Button>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {influencers.map((inf) => (
+              {influencers.filter(inf => !presentationMode || inf.visible !== false).map((inf) => (
                 <Card key={inf.id} className={`overflow-hidden ${changedInfluencers.has(inf.id) ? 'ring-2 ring-primary' : ''}`}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
@@ -426,7 +436,7 @@ const Dashboard = () => {
               </Button>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {communities.map((comm) => (
+              {communities.filter(comm => !presentationMode || comm.visible !== false).map((comm) => (
                 <Card key={comm.id} className={`overflow-hidden ${changedCommunities.has(comm.id) ? 'ring-2 ring-primary' : ''}`}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
@@ -546,7 +556,7 @@ const Dashboard = () => {
               </Button>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {streamers.map((str) => (
+              {streamers.filter(str => !presentationMode || str.visible !== false).map((str) => (
                 <Card key={str.id} className={`overflow-hidden ${changedStreamers.has(str.id) ? 'ring-2 ring-primary' : ''}`}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">

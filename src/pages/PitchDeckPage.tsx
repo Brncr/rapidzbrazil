@@ -161,7 +161,7 @@ const SlideScope: React.FC = () => (
 // SLIDE 4: Giveaway Strategy
 const SlideGiveaway: React.FC = () => (
     <div className="flex flex-col justify-center h-full px-4 sm:px-8 md:px-20 overflow-y-auto py-16">
-        <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-widest uppercase mb-3 sm:mb-4">04 — Giveaway Activation</p>
+        <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-widest uppercase mb-3 sm:mb-4">05 — Giveaway Activation</p>
         <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white leading-tight mb-4 sm:mb-6">
             100 VIP Tickets.<br />
             <span className="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">Massive engagement engine.</span>
@@ -169,6 +169,8 @@ const SlideGiveaway: React.FC = () => (
         <p className="text-sm sm:text-lg text-white/50 max-w-2xl mb-6 sm:mb-8">
             BeInCrypto provides <strong className="text-white">100 VIP tickets</strong> to Merge SP 2026.
             Creators distribute them via giveaways, driving <strong className="text-green-400">viral growth</strong> for all 3 brands.
+            Each new user gets <strong className="text-yellow-400">5% XAUt cashback</strong> (funded by Tether Gold, up to $50/user)
+            + <strong className="text-red-400">$10 USD bonus</strong> per card redemption via Rapidz.
         </p>
         <div className="bg-white/5 rounded-2xl border border-white/10 p-5 sm:p-8 max-w-lg">
             <p className="text-xs text-white/40 uppercase tracking-wider mb-4">Giveaway Rules</p>
@@ -189,13 +191,14 @@ const SlideGiveaway: React.FC = () => (
                 → Estimated 1,000–5,000 giveaway entries per activation
             </p>
         </div>
+
     </div>
 );
 
 // SLIDE 5: Projected Reach
 const SlideReach: React.FC = () => (
     <div className="flex flex-col justify-center h-full px-4 sm:px-8 md:px-20 overflow-y-auto py-16">
-        <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-widest uppercase mb-3 sm:mb-4">05 — Projected Impact</p>
+        <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-widest uppercase mb-3 sm:mb-4">06 — Projected Impact</p>
         <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white mb-6 sm:mb-10">
             The <span className="text-yellow-400">numbers</span> speak
         </h2>
@@ -205,7 +208,7 @@ const SlideReach: React.FC = () => (
                 { value: "135+", label: "Content Pieces", color: "text-green-400" },
                 { value: "45+", label: "Tweets & Threads", color: "text-blue-400" },
                 { value: "45+", label: "Reels/TikToks", color: "text-red-400" },
-                { value: "1–5K", label: "Giveaway Entries", color: "text-purple-400" },
+                { value: "2–5K", label: "New Users", color: "text-purple-400" },
                 { value: "100%", label: "Brand Mentions", color: "text-amber-400" },
             ].map((m) => (
                 <div key={m.label} className="bg-white/5 rounded-xl border border-white/5 p-3 sm:p-6 text-center">
@@ -346,7 +349,7 @@ const SlideTetherROI: React.FC = () => (
 // SLIDE 9: Timeline
 const SlideTimeline: React.FC = () => (
     <div className="flex flex-col justify-center h-full px-4 sm:px-8 md:px-20 overflow-y-auto py-16">
-        <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-widest uppercase mb-3 sm:mb-4">09 — Timeline</p>
+        <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-widest uppercase mb-3 sm:mb-4">07 — Timeline</p>
         <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-white mb-6 sm:mb-10">Execution Plan</h2>
         <div className="max-w-2xl space-y-0">
             {[
@@ -379,18 +382,19 @@ const SlideAsk: React.FC = () => (
     <div className="flex flex-col items-center justify-center h-full text-center px-4 sm:px-8 overflow-y-auto py-16">
         <img src="/tether-gold-logo.png" alt="Tether Gold" className="w-16 h-16 sm:w-24 sm:h-24 mb-4 sm:mb-8 object-contain" />
         <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-white mb-4 max-w-2xl leading-tight">
-            We're inviting Tether Gold to be the<br />
-            <span className="bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500 bg-clip-text text-transparent">
-                headline sponsor
-            </span>
-            <br />of the Creator House
+            Exclusive for Creator House
         </h2>
-        <div className="mt-4 sm:mt-6 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 border border-yellow-500/30 rounded-2xl px-6 sm:px-12 py-4 sm:py-8">
-            <p className="text-xs text-yellow-400/60 uppercase tracking-widest mb-2">Investment</p>
-            <p className="text-4xl sm:text-6xl font-black text-yellow-400">$5,000</p>
-            <p className="text-sm text-white/40 mt-2">USD</p>
+        <div className="mt-4 sm:mt-6 bg-gradient-to-br from-amber-500/20 via-yellow-600/15 to-yellow-500/20 border border-amber-400/40 rounded-3xl px-8 sm:px-16 py-8 sm:py-12 max-w-lg">
+            <p className="text-xs text-amber-400/70 uppercase tracking-[0.2em] mb-3">Tether Gold Cashback</p>
+            <p className="text-5xl sm:text-7xl font-black bg-gradient-to-r from-yellow-300 via-amber-300 to-yellow-400 bg-clip-text text-transparent">5%</p>
+            <p className="text-xl sm:text-2xl font-bold text-yellow-400 mt-1">XAUt Cashback</p>
+            <div className="mt-5 space-y-2">
+                <p className="text-sm text-white/60">Limited to <strong className="text-white font-bold">$50 per user</strong></p>
+                <p className="text-xs text-white/40">Valid until end of March 2026</p>
+                <p className="text-xs text-amber-400/60 font-semibold mt-3">Funded entirely by Tether Gold</p>
+            </div>
         </div>
-        <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl">
+        <div className="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl">
             {[
                 { icon: "📱", text: "135+ content pieces" },
                 { icon: "👥", text: "500K–2M reach" },
@@ -544,9 +548,97 @@ const SlideCreatorsHousePurpose: React.FC = () => (
                         </div>
                         <div>
                             <p className="text-sm font-bold text-white">Tether Gold</p>
-                            <p className="text-xs text-white/50"><strong className="text-yellow-400">5% cashback</strong> in XAUt during campaign period</p>
+                            <p className="text-xs text-white/50"><strong className="text-yellow-400">5% cashback</strong> in XAUt — funded by Tether during campaign</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+// SLIDE: CashGold — KPIs & Projections
+const SlideCashbackKPIs: React.FC = () => (
+    <div className="flex flex-col justify-start h-full px-4 sm:px-8 md:px-16 overflow-y-auto py-14 sm:py-16">
+        <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-widest uppercase mb-2 sm:mb-3">CashGold Program — KPIs & Projections</p>
+        <h2 className="text-lg sm:text-2xl md:text-3xl font-black text-white mb-1 leading-tight">
+            <span className="bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">5% XAUt Cashback</span> — What to Expect
+        </h2>
+        <p className="text-xs text-white/40 mb-5">Limited to $50/user · March 2026 only · Funded by Tether Gold</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl">
+            {/* --- User Acquisition Funnel --- */}
+            <div className="bg-gradient-to-br from-cyan-500/10 to-transparent rounded-2xl border border-cyan-500/20 p-4 sm:p-5">
+                <p className="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-3">📥 User Acquisition Funnel</p>
+                <div className="space-y-2">
+                    {[
+                        { label: "Total Reach (creators + press)", value: "500K–2M", color: "text-cyan-300" },
+                        { label: "Giveaway Entries", value: "5,000–15,000", color: "text-cyan-300" },
+                        { label: "App Downloads (conv. 3–5%)", value: "2,000–5,000", color: "text-cyan-400" },
+                        { label: "Active Users (conv. 40–60%)", value: "800–3,000", color: "text-white" },
+                    ].map((r) => (
+                        <div key={r.label} className="flex justify-between items-center py-1.5 border-b border-white/5">
+                            <span className="text-[11px] text-white/50">{r.label}</span>
+                            <span className={`text-sm font-bold ${r.color}`}>{r.value}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* --- Tether Exposure --- */}
+            <div className="bg-gradient-to-br from-yellow-500/10 to-transparent rounded-2xl border border-yellow-500/20 p-4 sm:p-5">
+                <p className="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-3">💰 Tether Gold — Max Exposure</p>
+                <div className="space-y-2">
+                    {[
+                        { label: "Cap per user", value: "$50", color: "text-yellow-300" },
+                        { label: "Projected active users", value: "800–3,000", color: "text-yellow-300" },
+                        { label: "Avg. cashback per user (est.)", value: "$8–$15", color: "text-yellow-300" },
+                        { label: "Total cashback cost (realistic)", value: "$6,400–$45,000", color: "text-yellow-400" },
+                        { label: "Max theoretical exposure", value: "$150,000", color: "text-white/40" },
+                    ].map((r) => (
+                        <div key={r.label} className="flex justify-between items-center py-1.5 border-b border-white/5">
+                            <span className="text-[11px] text-white/50">{r.label}</span>
+                            <span className={`text-sm font-bold ${r.color}`}>{r.value}</span>
+                        </div>
+                    ))}
+                </div>
+                <p className="text-[10px] text-white/30 mt-2 italic">* Most users won't hit $50 cap — realistic avg is $8–$15</p>
+            </div>
+
+            {/* --- Financial Volume --- */}
+            <div className="bg-gradient-to-br from-green-500/10 to-transparent rounded-2xl border border-green-500/20 p-4 sm:p-5">
+                <p className="text-xs font-bold text-green-400 uppercase tracking-wider mb-3">📊 Revenue & Volume</p>
+                <div className="space-y-2">
+                    {[
+                        { label: "Estimated volume generated", value: "$50K–$100K", color: "text-green-400" },
+                        { label: "Avg. transaction per user", value: "$30–$50", color: "text-green-300" },
+                        { label: "Rapidz bonus per card", value: "$10 USD", color: "text-red-400" },
+                        { label: "Cost per acquisition (CPA)", value: "$2–$9", color: "text-green-300" },
+                    ].map((r) => (
+                        <div key={r.label} className="flex justify-between items-center py-1.5 border-b border-white/5">
+                            <span className="text-[11px] text-white/50">{r.label}</span>
+                            <span className={`text-sm font-bold ${r.color}`}>{r.value}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* --- ROI Summary --- */}
+            <div className="bg-gradient-to-br from-purple-500/10 to-transparent rounded-2xl border border-purple-500/20 p-4 sm:p-5">
+                <p className="text-xs font-bold text-purple-400 uppercase tracking-wider mb-3">🎯 ROI for Tether Gold</p>
+                <div className="space-y-2">
+                    {[
+                        { label: "Content pieces (3 days)", value: "135+", color: "text-purple-300" },
+                        { label: "Combined social reach", value: "500K–2M+", color: "text-purple-300" },
+                        { label: "Brand mentions (100%)", value: "Every post", color: "text-purple-300" },
+                        { label: "Press releases (BeInCrypto)", value: "BR + ES", color: "text-purple-300" },
+                        { label: "Effective CPM", value: "< $1.00", color: "text-purple-400" },
+                    ].map((r) => (
+                        <div key={r.label} className="flex justify-between items-center py-1.5 border-b border-white/5">
+                            <span className="text-[11px] text-white/50">{r.label}</span>
+                            <span className={`text-sm font-bold ${r.color}`}>{r.value}</span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
@@ -564,9 +656,8 @@ const STATIC_SLIDES: SlideEntry[] = [
     { id: "giveaway", content: SlideGiveaway },
     { id: "purpose", content: SlideCreatorsHousePurpose },
     { id: "reach", content: SlideReach },
-    { id: "budget", content: SlideBudget },
-    { id: "partnership", content: SlidePartnership },
-    { id: "roi", content: SlideTetherROI },
+
+    { id: "cashbackKPIs", content: SlideCashbackKPIs },
     { id: "timeline", content: SlideTimeline },
     { id: "ask", content: SlideAsk },
 ];
@@ -596,8 +687,10 @@ const PitchDeckPage: React.FC = () => {
                             category: match?.category,
                             followers: match?.followers,
                             tier: match?.tier,
+                            visible: match?.visible,
                         };
-                    });
+                    })
+                    .filter((c) => c.visible !== false);
                 setCreators(confirmed);
             } catch (err) {
                 console.error("Failed to load creators for pitch deck", err);
@@ -609,7 +702,7 @@ const PitchDeckPage: React.FC = () => {
     const SlideCreators: React.FC = () => (
         <div className="flex flex-col justify-start h-full px-4 sm:px-8 md:px-16 overflow-hidden py-12 sm:py-14">
             <div className="flex items-baseline gap-3 mb-1">
-                <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-widest uppercase">03 — Confirmed Creators</p>
+                <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-widest uppercase">04 — Confirmed Creators</p>
             </div>
             <h2 className="text-lg sm:text-2xl md:text-3xl font-black text-white mb-1">
                 <span className="text-yellow-400">{creators.length}</span> creators confirmed

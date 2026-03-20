@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT = path.join(__dirname, "CreatorHouse_PitchDeck.pdf");
 
-const TOTAL_SLIDES = 15; // 15 slides in the deck
+const TOTAL_SLIDES = 13; // 13 slides in the deck
 const VIEWPORT = { width: 1920, height: 1080, deviceScaleFactor: 2 }; // 2x for high quality
 
 (async () => {
