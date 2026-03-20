@@ -11,6 +11,8 @@ import CreatorScopePage from "./pages/CreatorScopePage";
 import EventPage from "./pages/EventPage";
 import PitchDeckPage from "./pages/PitchDeckPage";
 import NotFound from "./pages/NotFound";
+import TwitterMetricsPage from "./pages/TwitterMetricsPage";
+import MetricsReportPage from "./pages/MetricsReportPage";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
             <Route path="/scope/:entityType/:entityId" element={<CreatorScopePage />} />
             <Route path="/evento" element={<EventPage />} />
             <Route path="/pitchdeck" element={<PitchDeckPage />} />
+            <Route path="/twitter-metrics" element={<TwitterMetricsPage />} />
+            <Route path="/metrics-report" element={<MetricsReportPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
